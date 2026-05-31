@@ -9,7 +9,7 @@ interface Props {
 }
 
 const INPUT_CLASS =
-  'flex-1 rounded-2xl border border-transparent bg-gray-50 px-4 py-3 text-sm font-medium text-gray-900 transition-all outline-none placeholder:text-gray-400 focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900';
+  'flex-1 rounded border border-transparent bg-gray-50 px-4 py-3 text-sm font-medium text-gray-900 transition-all outline-none placeholder:text-gray-400 focus:border-gray-900 focus:bg-white';
 
 /**
  * Reusable image upload component.
@@ -44,10 +44,10 @@ export function ImageUpload({ value, onChange, label = 'Foto / Referência' }: P
   if (value) {
     return (
       <div className="space-y-2">
-        <span className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500">
+        <span className="text-xs font-bold tracking-widest text-gray-400 uppercase">
           {label}
         </span>
-        <div className="relative overflow-hidden rounded-2xl bg-gray-100 dark:bg-gray-800">
+        <div className="relative overflow-hidden rounded bg-gray-100">
           <img src={value} alt="Referência" className="h-48 w-full object-cover" />
           <button
             type="button"
@@ -63,14 +63,14 @@ export function ImageUpload({ value, onChange, label = 'Foto / Referência' }: P
 
   return (
     <div className="space-y-2">
-      <span className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500">
+      <span className="text-xs font-bold tracking-widest text-gray-400 uppercase">
         {label}
       </span>
       <div className="flex gap-2">
         <button
           type="button"
           onClick={() => fileRef.current?.click()}
-          className="flex shrink-0 items-center gap-2 rounded-2xl bg-gray-50 px-4 py-3 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+          className="flex shrink-0 items-center gap-2 rounded bg-gray-50 px-4 py-3 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100"
         >
           <Upload className="h-4 w-4" />
           Upload

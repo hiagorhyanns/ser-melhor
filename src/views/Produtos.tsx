@@ -142,7 +142,7 @@ export function Produtos() {
               </div>
             }
           >
-            <p className="text-xs font-bold tracking-widest text-gray-500 uppercase dark:text-gray-400">
+            <p className="text-xs font-bold tracking-widest text-gray-500 uppercase">
               Frequência: <span className="text-gray-900">{item.frequenciaUso}</span>
             </p>
           </Card>
@@ -150,7 +150,7 @@ export function Produtos() {
         ))}
 
         {filteredItems.length === 0 && (
-          <div className="col-span-full rounded-[32px] border border-dashed border-gray-200 bg-white py-20 text-center">
+          <div className="col-span-full rounded border border-dashed border-gray-200 bg-white py-20 text-center">
             <p className="font-medium text-gray-400 italic">Nenhum produto cadastrado.</p>
           </div>
         )}
@@ -161,7 +161,7 @@ export function Produtos() {
           <div className="space-y-2">
             <label
               htmlFor="produto-nome"
-              className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+              className="text-xs font-bold tracking-widest text-gray-400 uppercase"
             >
               Nome do Produto
             </label>
@@ -170,14 +170,14 @@ export function Produtos() {
               name="nome"
               required
               defaultValue={editingItem?.nome}
-              className="w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <label
                 htmlFor="produto-marca"
-                className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+                className="text-xs font-bold tracking-widest text-gray-400 uppercase"
               >
                 Marca
               </label>
@@ -186,13 +186,13 @@ export function Produtos() {
                 name="marca"
                 required
                 defaultValue={editingItem?.marca}
-                className="w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
               />
             </div>
             <div className="space-y-2">
               <label
                 htmlFor="produto-categoria"
-                className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+                className="text-xs font-bold tracking-widest text-gray-400 uppercase"
               >
                 Categoria
               </label>
@@ -201,7 +201,7 @@ export function Produtos() {
                 name="categoria"
                 required
                 defaultValue={editingItem?.categoria}
-                className="w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
               />
             </div>
           </div>
@@ -209,7 +209,7 @@ export function Produtos() {
             <div className="space-y-2">
               <label
                 htmlFor="produto-frequenciaUso"
-                className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+                className="text-xs font-bold tracking-widest text-gray-400 uppercase"
               >
                 Frequência de Uso
               </label>
@@ -218,14 +218,14 @@ export function Produtos() {
                 name="frequenciaUso"
                 required
                 defaultValue={editingItem?.frequenciaUso}
-                className="w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
                 placeholder="Ex: Diário"
               />
             </div>
             <div className="space-y-2">
               <label
                 htmlFor="produto-nota"
-                className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+                className="text-xs font-bold tracking-widest text-gray-400 uppercase"
               >
                 Nota (0-10)
               </label>
@@ -237,14 +237,14 @@ export function Produtos() {
                 max="10"
                 required
                 defaultValue={editingItem?.nota || 8}
-                className="w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
               />
             </div>
           </div>
           <div className="space-y-2">
             <label
               htmlFor="produto-status"
-              className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+              className="text-xs font-bold tracking-widest text-gray-400 uppercase"
             >
               Status
             </label>
@@ -252,14 +252,14 @@ export function Produtos() {
               id="produto-status"
               name="status"
               defaultValue={editingItem?.status || 'uso diário'}
-              className="w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
             >
               <option value="uso diário">Uso Diário</option>
               <option value="testar">Testar</option>
               <option value="comprar">Comprar</option>
             </select>
           </div>
-          <button className="w-full rounded-2xl bg-gray-900 py-4 font-black tracking-widest text-white uppercase">
+          <button className="w-full rounded bg-gray-900 py-4 font-black tracking-widest text-white uppercase">
             Salvar
           </button>
         </form>

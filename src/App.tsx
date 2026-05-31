@@ -1,14 +1,7 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import { lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Layout } from './components/Layout';
-import { Dashboard } from './views/Dashboard'; // eager — first paint
 
-// Lazy-loaded views: cada rota vira chunk separado no build
 const Marcas = lazy(() => import('./views/Marcas').then((m) => ({ default: m.Marcas })));
 const Lojas = lazy(() => import('./views/Lojas').then((m) => ({ default: m.Lojas })));
 const Barba = lazy(() => import('./views/Barba').then((m) => ({ default: m.Barba })));
@@ -21,7 +14,7 @@ const Musculos = lazy(() => import('./views/Musculos').then((m) => ({ default: m
 function PageLoader() {
   return (
     <div className="flex h-64 items-center justify-center">
-      <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-gray-900 dark:border-gray-700 dark:border-t-gray-100" />
+      <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-900" />
     </div>
   );
 }
@@ -32,7 +25,7 @@ export default function App() {
       <Layout>
         <Suspense fallback={<PageLoader />}>
           <Routes>
-            <Route path="/" element={<Dashboard />} />
+            <Route path="/" element={<Navigate to="/marcas" replace />} />
             <Route path="/marcas" element={<Marcas />} />
             <Route path="/lojas" element={<Lojas />} />
             <Route path="/barba" element={<Barba />} />

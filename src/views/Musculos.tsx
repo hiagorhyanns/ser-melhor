@@ -110,16 +110,16 @@ export function Musculos() {
             footer={`Frequência: ${item.frequenciaSemanal}`}
           >
             <div className="space-y-4">
-              <div className="rounded-2xl bg-gray-50 p-4 dark:bg-gray-800">
+              <div className="rounded bg-gray-50 p-4">
                 <h4 className="mb-1 text-[10px] font-bold tracking-widest text-gray-400 uppercase">
                   Exercício Recomendado
                 </h4>
-                <p className="text-sm font-bold text-gray-900 dark:text-gray-100">
+                <p className="text-sm font-bold text-gray-900">
                   {item.exercicio}
                 </p>
               </div>
               {item.observacao && (
-                <p className="text-xs font-medium text-gray-500 italic dark:text-gray-400">
+                <p className="text-xs font-medium text-gray-500 italic">
                   &ldquo;{item.observacao}&rdquo;
                 </p>
               )}
@@ -135,7 +135,7 @@ export function Musculos() {
             <div className="space-y-2">
               <label
                 htmlFor="musculo-musculo"
-                className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+                className="text-xs font-bold tracking-widest text-gray-400 uppercase"
               >
                 Músculo
               </label>
@@ -144,14 +144,14 @@ export function Musculos() {
                 name="musculo"
                 required
                 defaultValue={editingItem?.musculo}
-                className="w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
                 placeholder="Ex: Peito, Costas..."
               />
             </div>
             <div className="space-y-2">
               <label
                 htmlFor="musculo-objetivo"
-                className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+                className="text-xs font-bold tracking-widest text-gray-400 uppercase"
               >
                 Objetivo
               </label>
@@ -160,7 +160,7 @@ export function Musculos() {
                 name="objetivo"
                 required
                 defaultValue={editingItem?.objetivo}
-                className="w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
                 placeholder="Ex: Definição, Volume..."
               />
             </div>
@@ -169,7 +169,7 @@ export function Musculos() {
             <div className="space-y-2">
               <label
                 htmlFor="musculo-exercicio"
-                className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+                className="text-xs font-bold tracking-widest text-gray-400 uppercase"
               >
                 Exercício Principal
               </label>
@@ -178,13 +178,13 @@ export function Musculos() {
                 name="exercicio"
                 required
                 defaultValue={editingItem?.exercicio}
-                className="w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
               />
             </div>
             <div className="space-y-2">
               <label
                 htmlFor="musculo-frequenciaSemanal"
-                className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+                className="text-xs font-bold tracking-widest text-gray-400 uppercase"
               >
                 Freq. Semanal
               </label>
@@ -193,7 +193,7 @@ export function Musculos() {
                 name="frequenciaSemanal"
                 required
                 defaultValue={editingItem?.frequenciaSemanal}
-                className="w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
                 placeholder="Ex: 2x"
               />
             </div>
@@ -201,7 +201,7 @@ export function Musculos() {
           <div className="space-y-2">
             <label
               htmlFor="musculo-observacao"
-              className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+              className="text-xs font-bold tracking-widest text-gray-400 uppercase"
             >
               Observação
             </label>
@@ -209,10 +209,10 @@ export function Musculos() {
               id="musculo-observacao"
               name="observacao"
               defaultValue={editingItem?.observacao}
-              className="min-h-[80px] w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+              className="min-h-[80px] w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
             />
           </div>
-          <button className="w-full rounded-2xl bg-gray-900 py-4 font-black tracking-widest text-white uppercase">
+          <button className="w-full rounded bg-gray-900 py-4 font-black tracking-widest text-white uppercase">
             Salvar
           </button>
         </form>

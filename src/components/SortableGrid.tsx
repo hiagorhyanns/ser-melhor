@@ -93,7 +93,7 @@ export function SortableItem({ id, children }: ItemProps) {
           {...attributes}
           {...listeners}
           aria-label="Reordenar"
-          className="absolute -top-px left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 cursor-grab rounded-full bg-white px-2 py-1 text-gray-300 opacity-0 shadow-sm transition-opacity active:cursor-grabbing group-hover/sortable:opacity-100 hover:text-gray-500 dark:bg-gray-800 dark:text-gray-600 dark:hover:text-gray-400"
+          className="absolute -top-px left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 cursor-grab rounded-full bg-white px-2 py-1 text-gray-300 opacity-0 shadow-sm transition-opacity active:cursor-grabbing group-hover/sortable:opacity-100 hover:text-gray-500"
         >
           <GripVertical className="h-3.5 w-3.5" />
         </button>

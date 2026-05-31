@@ -143,10 +143,10 @@ export function Marcas() {
               <img
                 src={item.foto}
                 alt={item.nome}
-                className="mb-3 h-36 w-full rounded-xl object-cover"
+                className="mb-3 h-36 w-full rounded object-cover"
               />
             )}
-            <p className="line-clamp-3 text-sm leading-relaxed text-gray-600 dark:text-gray-300">
+            <p className="line-clamp-3 text-sm leading-relaxed text-gray-600">
               {item.observacao || 'Nenhuma observação adicionada.'}
             </p>
           </Card>
@@ -154,7 +154,7 @@ export function Marcas() {
         ))}
 
         {filteredItems.length === 0 && (
-          <div className="col-span-full rounded-[32px] border border-dashed border-gray-200 bg-white py-20 text-center">
+          <div className="col-span-full rounded border border-dashed border-gray-200 bg-white py-20 text-center">
             <p className="font-medium text-gray-400 italic">
               Nenhuma marca encontrada. Comece adicionando uma!
             </p>
@@ -171,7 +171,7 @@ export function Marcas() {
           <div className="space-y-2">
             <label
               htmlFor="marca-nome"
-              className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+              className="text-xs font-bold tracking-widest text-gray-400 uppercase"
             >
               Nome da Marca
             </label>
@@ -180,14 +180,14 @@ export function Marcas() {
               name="nome"
               required
               defaultValue={editingItem?.nome}
-              className="w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
               placeholder="Ex: Levis, Armani, Channel..."
             />
           </div>
           <div className="space-y-2">
             <label
               htmlFor="marca-categoria"
-              className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+              className="text-xs font-bold tracking-widest text-gray-400 uppercase"
             >
               Categoria
             </label>
@@ -196,14 +196,14 @@ export function Marcas() {
               name="categoria"
               required
               defaultValue={editingItem?.categoria}
-              className="w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
               placeholder="Ex: Roupas, Calçados, Perfumes..."
             />
           </div>
           <div className="space-y-2">
             <label
               htmlFor="marca-nivelInteresse"
-              className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+              className="text-xs font-bold tracking-widest text-gray-400 uppercase"
             >
               Nível de Interesse (1-5)
             </label>
@@ -215,13 +215,13 @@ export function Marcas() {
               max="5"
               required
               defaultValue={editingItem?.nivelInteresse || 3}
-              className="w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
             />
           </div>
           <div className="space-y-2">
             <label
               htmlFor="marca-observacao"
-              className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+              className="text-xs font-bold tracking-widest text-gray-400 uppercase"
             >
               Observação
             </label>
@@ -229,7 +229,7 @@ export function Marcas() {
               id="marca-observacao"
               name="observacao"
               defaultValue={editingItem?.observacao}
-              className="min-h-[100px] w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+              className="min-h-[100px] w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
               placeholder="Notas sobre qualidade, preço, caimento..."
             />
           </div>
@@ -239,13 +239,13 @@ export function Marcas() {
               type="checkbox"
               name="favorita"
               defaultChecked={editingItem?.favorita}
-              className="h-5 w-5 cursor-pointer rounded-lg border-2 border-gray-200 transition-all checked:bg-gray-900"
+              className="h-5 w-5 cursor-pointer rounded border-2 border-gray-200 transition-all checked:bg-gray-900"
             />
             <span className="text-sm font-bold text-gray-600 group-hover:text-gray-900">
               Marcar como favorita
             </span>
           </label>
-          <button className="w-full rounded-2xl bg-gray-900 py-4 font-black tracking-widest text-white uppercase shadow-xl shadow-gray-200 transition-all hover:bg-gray-800">
+          <button className="w-full rounded bg-gray-900 py-4 font-black tracking-widest text-white uppercase shadow-xl shadow-gray-200 transition-all hover:bg-gray-800">
             Salvar
           </button>
         </form>

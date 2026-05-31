@@ -101,7 +101,7 @@ export function Postura() {
             }}
             icon={<Accessibility />}
           >
-            <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-300">
+            <p className="text-sm leading-relaxed text-gray-600">
               {item.descricao}
             </p>
           </Card>
@@ -118,7 +118,7 @@ export function Postura() {
           <div className="space-y-2">
             <label
               htmlFor="postura-titulo"
-              className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+              className="text-xs font-bold tracking-widest text-gray-400 uppercase"
             >
               Título
             </label>
@@ -127,13 +127,13 @@ export function Postura() {
               name="titulo"
               required
               defaultValue={editingItem?.titulo}
-              className="w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
             />
           </div>
           <div className="space-y-2">
             <label
               htmlFor="postura-descricao"
-              className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+              className="text-xs font-bold tracking-widest text-gray-400 uppercase"
             >
               Descrição/Dica
             </label>
@@ -142,10 +142,10 @@ export function Postura() {
               name="descricao"
               required
               defaultValue={editingItem?.descricao}
-              className="min-h-[100px] w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+              className="min-h-[100px] w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
             />
           </div>
-          <button className="w-full rounded-2xl bg-gray-900 py-4 font-black tracking-widest text-white uppercase">
+          <button className="w-full rounded bg-gray-900 py-4 font-black tracking-widest text-white uppercase">
             Salvar
           </button>
         </form>

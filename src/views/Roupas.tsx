@@ -5,8 +5,7 @@ import { Card } from '../components/Card';
 import { FilterSelect } from '../components/FilterSelect';
 import { ImageUpload } from '../components/ImageUpload';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
-import { useAIGenerate } from '../hooks/useAIGenerate';
-import { Shirt, Sparkles } from 'lucide-react';
+import { Shirt } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { Roupa } from '../types';
 import { SortableGrid, SortableItem } from '../components/SortableGrid';
@@ -23,20 +22,6 @@ export function Roupas() {
 
   const debouncedSearch = useDebouncedValue(search, 200);
   const hasActiveFilters = completedFilter !== '' || statusFilter !== '' || categoriaFilter !== '';
-
-  const { result: aiResult, loading: aiLoading, error: aiError, generate: generateAI, reset: resetAI, available: geminiEnabled } = useAIGenerate();
-  const [isAIModalOpen, setIsAIModalOpen] = useState(false);
-
-  const handleGeraCombinacao = () => {
-    const disponiveis = data.roupas
-      .filter((r) => r.status === 'tenho')
-      .map((r) => ({ nome: r.nome, categoria: r.categoria, cor: r.cor, ocasiao: r.ocasiao }));
-    if (disponiveis.length === 0) return;
-    setIsAIModalOpen(true);
-    generateAI(
-      `Você é um estilista pessoal. Sugira 3 combinações de looks completos baseados nas roupas abaixo. Responda SOMENTE com JSON válido: array de 3 objetos com campos "nome" (string), "pecas" (array de strings), "ocasiao" (string). Nenhum texto fora do JSON.\n\nRoupas disponíveis:\n${JSON.stringify(disponiveis)}`,
-    );
-  };
 
   const filteredItems = useMemo(() => {
     const q = debouncedSearch.toLowerCase();
@@ -140,19 +125,6 @@ export function Roupas() {
         }
       />
 
-      {geminiEnabled && (
-        <div className="mb-6">
-          <button
-            onClick={handleGeraCombinacao}
-            disabled={data.roupas.filter((r) => r.status === 'tenho').length === 0}
-            className="flex items-center gap-2 rounded-2xl bg-indigo-50 px-4 py-3 text-sm font-bold text-indigo-600 transition-colors hover:bg-indigo-100 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-indigo-900/20 dark:text-indigo-400 dark:hover:bg-indigo-900/40"
-          >
-            <Sparkles className="h-4 w-4" />
-            Gerar Combinação com IA
-          </button>
-        </div>
-      )}
-
       <SortableGrid
         ids={filteredItems.map((i) => i.id)}
         onReorder={(from, to) => reorderItems('roupas', from, to)}
@@ -197,14 +169,14 @@ export function Roupas() {
               <img
                 src={item.foto}
                 alt={item.nome}
-                className="mb-3 h-36 w-full rounded-xl object-cover"
+                className="mb-3 h-36 w-full rounded object-cover"
               />
             )}
-            <div className="rounded-xl bg-gray-50 p-3 dark:bg-gray-800">
+            <div className="rounded bg-gray-50 p-3">
               <h4 className="mb-1 text-[10px] font-bold tracking-widest text-gray-400 uppercase">
                 Combinações
               </h4>
-              <p className="text-xs font-medium text-gray-600 dark:text-gray-300">
+              <p className="text-xs font-medium text-gray-600">
                 {item.combinacoes || 'Nenhuma combinação sugerida.'}
               </p>
             </div>
@@ -213,66 +185,18 @@ export function Roupas() {
         ))}
 
         {filteredItems.length === 0 && (
-          <div className="col-span-full rounded-[32px] border border-dashed border-gray-200 bg-white py-20 text-center">
+          <div className="col-span-full rounded border border-dashed border-gray-200 bg-white py-20 text-center">
             <p className="font-medium text-gray-400 italic">Nenhuma peça cadastrada.</p>
           </div>
         )}
       </SortableGrid>
-
-      {/* Modal IA — Combinações */}
-      <Modal
-        isOpen={isAIModalOpen}
-        onClose={() => { setIsAIModalOpen(false); resetAI(); }}
-        title="Combinações Sugeridas ✨"
-      >
-        {aiLoading && (
-          <div className="flex h-32 items-center justify-center">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-indigo-500" />
-          </div>
-        )}
-        {aiError && (
-          <p className="text-sm text-red-500">Erro ao gerar. Verifique a chave Gemini.</p>
-        )}
-        {!aiLoading && !aiError && aiResult && (
-          <div className="space-y-3">
-            {(() => {
-              try {
-                const outfits = JSON.parse(aiResult) as { nome: string; pecas: string[]; ocasiao: string }[];
-                return outfits.map((outfit, i) => (
-                  <div key={i} className="rounded-2xl bg-gray-50 p-4 dark:bg-gray-800">
-                    <div className="mb-2 flex items-center justify-between">
-                      <h4 className="font-bold text-gray-900 dark:text-gray-100">{outfit.nome}</h4>
-                      <span className="rounded-md bg-indigo-100 px-2 py-0.5 text-[10px] font-bold tracking-wider text-indigo-700 uppercase dark:bg-indigo-900/40 dark:text-indigo-400">
-                        {outfit.ocasiao}
-                      </span>
-                    </div>
-                    <ul className="space-y-1">
-                      {outfit.pecas.map((peca, j) => (
-                        <li key={j} className="text-sm text-gray-600 dark:text-gray-300">
-                          • {peca}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ));
-              } catch {
-                return (
-                  <p className="whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-300">
-                    {aiResult}
-                  </p>
-                );
-              }
-            })()}
-          </div>
-        )}
-      </Modal>
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Nova Peça">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <label
               htmlFor="roupa-nome"
-              className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+              className="text-xs font-bold tracking-widest text-gray-400 uppercase"
             >
               Nome da Peça
             </label>
@@ -281,7 +205,7 @@ export function Roupas() {
               name="nome"
               required
               defaultValue={editingItem?.nome}
-              className="w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
               placeholder="Ex: Camiseta Branca Básica"
             />
           </div>
@@ -289,7 +213,7 @@ export function Roupas() {
             <div className="space-y-2">
               <label
                 htmlFor="roupa-categoria"
-                className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+                className="text-xs font-bold tracking-widest text-gray-400 uppercase"
               >
                 Categoria
               </label>
@@ -297,7 +221,7 @@ export function Roupas() {
                 id="roupa-categoria"
                 name="categoria"
                 defaultValue={editingItem?.categoria || 'Camisetas'}
-                className="w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
               >
                 <option>Camisetas</option>
                 <option>Camisas</option>
@@ -312,7 +236,7 @@ export function Roupas() {
             <div className="space-y-2">
               <label
                 htmlFor="roupa-cor"
-                className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+                className="text-xs font-bold tracking-widest text-gray-400 uppercase"
               >
                 Cor
               </label>
@@ -321,14 +245,14 @@ export function Roupas() {
                 name="cor"
                 required
                 defaultValue={editingItem?.cor}
-                className="w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
               />
             </div>
           </div>
           <div className="space-y-2">
             <label
               htmlFor="roupa-ocasiao"
-              className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+              className="text-xs font-bold tracking-widest text-gray-400 uppercase"
             >
               Ocasião de Uso
             </label>
@@ -336,14 +260,14 @@ export function Roupas() {
               id="roupa-ocasiao"
               name="ocasiao"
               defaultValue={editingItem?.ocasiao}
-              className="w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
               placeholder="Ex: Casual, Trabalho, Noite..."
             />
           </div>
           <div className="space-y-2">
             <label
               htmlFor="roupa-status"
-              className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+              className="text-xs font-bold tracking-widest text-gray-400 uppercase"
             >
               Status
             </label>
@@ -351,7 +275,7 @@ export function Roupas() {
               id="roupa-status"
               name="status"
               defaultValue={editingItem?.status || 'tenho'}
-              className="w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
             >
               <option value="tenho">Tenho</option>
               <option value="comprar">Comprar</option>
@@ -361,7 +285,7 @@ export function Roupas() {
           <div className="space-y-2">
             <label
               htmlFor="roupa-combinacoes"
-              className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+              className="text-xs font-bold tracking-widest text-gray-400 uppercase"
             >
               Combinações Recomendadas
             </label>
@@ -369,11 +293,11 @@ export function Roupas() {
               id="roupa-combinacoes"
               name="combinacoes"
               defaultValue={editingItem?.combinacoes}
-              className="min-h-[80px] w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+              className="min-h-[80px] w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
             />
           </div>
           <ImageUpload value={foto} onChange={setFoto} label="Foto da Peça" />
-          <button className="w-full rounded-2xl bg-gray-900 py-4 font-black tracking-widest text-white uppercase">
+          <button className="w-full rounded bg-gray-900 py-4 font-black tracking-widest text-white uppercase">
             Salvar
           </button>
         </form>

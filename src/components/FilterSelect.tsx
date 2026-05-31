@@ -29,14 +29,14 @@ export function FilterSelect({
   return (
     <label
       htmlFor={id}
-      className="flex min-w-[180px] flex-col gap-2 text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+      className="flex min-w-[180px] flex-col gap-2 text-xs font-bold tracking-widest text-gray-400 uppercase"
     >
       {label}
       <select
         id={id}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="rounded-xl border border-gray-100 bg-gray-50 p-3 text-sm font-medium text-gray-900 normal-case transition-all outline-none focus:border-gray-900 focus:bg-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+        className="rounded border border-gray-100 bg-gray-50 p-3 text-sm font-medium text-gray-900 normal-case transition-all outline-none focus:border-gray-900 focus:bg-white"
       >
         <option value="">{allLabel}</option>
         {options.map((opt) => (

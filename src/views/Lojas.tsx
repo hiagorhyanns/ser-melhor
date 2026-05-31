@@ -152,7 +152,7 @@ export function Lojas() {
               )
             }
           >
-            <p className="line-clamp-2 text-sm text-gray-600 dark:text-gray-300">
+            <p className="line-clamp-2 text-sm text-gray-600">
               {item.observacao || 'Sem observações'}
             </p>
           </Card>
@@ -160,7 +160,7 @@ export function Lojas() {
         ))}
 
         {filteredItems.length === 0 && (
-          <div className="col-span-full rounded-[32px] border border-dashed border-gray-200 bg-white py-20 text-center">
+          <div className="col-span-full rounded border border-dashed border-gray-200 bg-white py-20 text-center">
             <p className="font-medium text-gray-400 italic">Nenhuma loja encontrada.</p>
           </div>
         )}
@@ -176,7 +176,7 @@ export function Lojas() {
             <div className="col-span-2 space-y-2 md:col-span-1">
               <label
                 htmlFor="loja-nome"
-                className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+                className="text-xs font-bold tracking-widest text-gray-400 uppercase"
               >
                 Nome
               </label>
@@ -185,13 +185,13 @@ export function Lojas() {
                 name="nome"
                 required
                 defaultValue={editingItem?.nome}
-                className="w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
               />
             </div>
             <div className="col-span-2 space-y-2 md:col-span-1">
               <label
                 htmlFor="loja-categoria"
-                className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+                className="text-xs font-bold tracking-widest text-gray-400 uppercase"
               >
                 Categoria
               </label>
@@ -200,14 +200,14 @@ export function Lojas() {
                 name="categoria"
                 required
                 defaultValue={editingItem?.categoria}
-                className="w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
               />
             </div>
           </div>
           <div className="space-y-2">
             <label
               htmlFor="loja-link"
-              className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+              className="text-xs font-bold tracking-widest text-gray-400 uppercase"
             >
               Link / URL
             </label>
@@ -215,14 +215,14 @@ export function Lojas() {
               id="loja-link"
               name="link"
               defaultValue={editingItem?.link}
-              className="w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <label
                 htmlFor="loja-faixaPreco"
-                className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+                className="text-xs font-bold tracking-widest text-gray-400 uppercase"
               >
                 Faixa de Preço
               </label>
@@ -230,7 +230,7 @@ export function Lojas() {
                 id="loja-faixaPreco"
                 name="faixaPreco"
                 defaultValue={editingItem?.faixaPreco || '$$'}
-                className="w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
               >
                 <option>$ (Econômico)</option>
                 <option>$$ (Médio)</option>
@@ -241,7 +241,7 @@ export function Lojas() {
             <div className="space-y-2">
               <label
                 htmlFor="loja-status"
-                className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+                className="text-xs font-bold tracking-widest text-gray-400 uppercase"
               >
                 Status
               </label>
@@ -249,7 +249,7 @@ export function Lojas() {
                 id="loja-status"
                 name="status"
                 defaultValue={editingItem?.status || 'ver depois'}
-                className="w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
               >
                 <option value="ver depois">Ver depois</option>
                 <option value="comprar">Comprar</option>
@@ -260,7 +260,7 @@ export function Lojas() {
           <div className="space-y-2">
             <label
               htmlFor="loja-observacao"
-              className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+              className="text-xs font-bold tracking-widest text-gray-400 uppercase"
             >
               Observação
             </label>
@@ -268,10 +268,10 @@ export function Lojas() {
               id="loja-observacao"
               name="observacao"
               defaultValue={editingItem?.observacao}
-              className="min-h-[80px] w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+              className="min-h-[80px] w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
             />
           </div>
-          <button className="w-full rounded-2xl bg-gray-900 py-4 font-black tracking-widest text-white uppercase shadow-xl shadow-gray-200">
+          <button className="w-full rounded bg-gray-900 py-4 font-black tracking-widest text-white uppercase shadow-xl shadow-gray-200">
             Salvar
           </button>
         </form>

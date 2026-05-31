@@ -31,10 +31,10 @@ export function Card({
     <motion.div
       layout
       className={cn(
-        'rounded-3xl border border-gray-100 bg-white p-6 transition-all duration-300 dark:border-gray-800 dark:bg-gray-900',
+        'rounded border border-gray-100 bg-white p-6 transition-all duration-300',
         completed
-          ? 'scale-[0.98] border-transparent bg-gray-50 opacity-80 dark:border-transparent dark:bg-gray-800/60'
-          : 'shadow-sm hover:shadow-md dark:shadow-black/20',
+          ? 'scale-[0.98] border-transparent bg-gray-50 opacity-80'
+          : 'shadow-sm hover:shadow-md',
       )}
     >
       <div className="mb-4 flex items-start justify-between">
@@ -42,10 +42,10 @@ export function Card({
           {icon && (
             <div
               className={cn(
-                'flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl',
+                'flex h-12 w-12 shrink-0 items-center justify-center rounded',
                 completed
-                  ? 'bg-gray-200 text-gray-400 dark:bg-gray-700 dark:text-gray-500'
-                  : 'bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900',
+                  ? 'bg-gray-200 text-gray-400'
+                  : 'bg-gray-900 text-white',
               )}
             >
               {icon}
@@ -55,8 +55,8 @@ export function Card({
             <div className="flex items-center gap-2">
               <h3
                 className={cn(
-                  'text-lg font-bold text-gray-900 dark:text-gray-100',
-                  completed && 'text-gray-400 line-through decoration-2 dark:text-gray-500',
+                  'text-lg font-bold text-gray-900',
+                  completed && 'text-gray-400 line-through decoration-2',
                 )}
               >
                 {title}
@@ -66,8 +66,8 @@ export function Card({
             {subtitle && (
               <p
                 className={cn(
-                  'text-sm font-medium text-gray-500 dark:text-gray-400',
-                  completed && 'text-gray-300 dark:text-gray-600',
+                  'text-sm font-medium text-gray-500',
+                  completed && 'text-gray-300',
                 )}
               >
                 {subtitle}
@@ -82,7 +82,7 @@ export function Card({
               type="button"
               onClick={onEdit}
               aria-label="Editar"
-              className="rounded-full p-2 text-gray-400 transition-colors hover:bg-gray-50 hover:text-gray-900 dark:text-gray-500 dark:hover:bg-gray-800 dark:hover:text-gray-100"
+              className="rounded-full p-2 text-gray-400 transition-colors hover:bg-gray-50 hover:text-gray-900"
             >
               <Edit2 className="h-4 w-4" />
             </button>
@@ -92,7 +92,7 @@ export function Card({
               type="button"
               onClick={onDelete}
               aria-label="Remover"
-              className="rounded-full p-2 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500 dark:text-gray-500 dark:hover:bg-red-950/40 dark:hover:text-red-400"
+              className="rounded-full p-2 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500"
             >
               <Trash2 className="h-4 w-4" />
             </button>
@@ -106,7 +106,7 @@ export function Card({
                 'flex h-10 w-10 items-center justify-center rounded-full transition-all',
                 completed
                   ? 'bg-green-500 text-white'
-                  : 'bg-gray-50 text-gray-400 hover:bg-gray-100 hover:text-gray-900 dark:bg-gray-800 dark:text-gray-500 dark:hover:bg-gray-700 dark:hover:text-gray-100',
+                  : 'bg-gray-50 text-gray-400 hover:bg-gray-100 hover:text-gray-900',
               )}
             >
               <CheckCircle2 className="h-6 w-6" />
@@ -118,7 +118,7 @@ export function Card({
       <div className="space-y-4">{children}</div>
 
       {footer && (
-        <div className="mt-6 flex items-center justify-between border-t border-gray-50 pt-6 text-xs font-bold tracking-wider text-gray-400 uppercase dark:border-gray-800 dark:text-gray-500">
+        <div className="mt-6 flex items-center justify-between border-t border-gray-50 pt-6 text-xs font-bold tracking-wider text-gray-400 uppercase">
           {footer}
         </div>
       )}

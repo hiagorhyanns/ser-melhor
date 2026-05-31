@@ -4,9 +4,8 @@ import { PageHeader, Modal } from '../components/PageHeader';
 import { Card } from '../components/Card';
 import { FilterSelect } from '../components/FilterSelect';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
-import { useAIGenerate } from '../hooks/useAIGenerate';
 import { ImageUpload } from '../components/ImageUpload';
-import { User, ImageIcon, Sparkles } from 'lucide-react';
+import { User, ImageIcon } from 'lucide-react';
 import { CabeloItem } from '../types';
 import { SortableGrid, SortableItem } from '../components/SortableGrid';
 
@@ -39,16 +38,6 @@ export function Cabelo() {
       return true;
     });
   }, [data.cabelo, debouncedSearch, completedFilter]);
-
-  const { result: aiResult, loading: aiLoading, error: aiError, generate: generateAI, reset: resetAI, available: geminiEnabled } = useAIGenerate();
-  const [isAIModalOpen, setIsAIModalOpen] = useState(false);
-
-  const handleGeraRotina = (item: CabeloItem) => {
-    setIsAIModalOpen(true);
-    generateAI(
-      `Você é especialista em cuidados capilares masculinos. Crie uma rotina de cuidados para o corte descrito. Responda em português do Brasil com passos numerados (máximo 8). Apenas os passos, sem introdução.\n\nCorte: ${item.tipoCorte}\nFrequência de corte: ${item.frequencia}\nBarbeiro/Local: ${item.barbeiro || 'não definido'}\nProdutos e observações: ${item.observacoes || 'nenhum'}`,
-    );
-  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -134,34 +123,25 @@ export function Cabelo() {
                 <img
                   src={item.foto}
                   alt={item.tipoCorte}
-                  className="h-36 w-full rounded-xl object-cover"
+                  className="h-36 w-full rounded object-cover"
                 />
               )}
               {item.referencia && (
-                <div className="flex items-center gap-3 overflow-hidden rounded-xl bg-gray-100 p-3 text-xs font-bold text-gray-500 uppercase dark:bg-gray-800">
+                <div className="flex items-center gap-3 overflow-hidden rounded bg-gray-100 p-3 text-xs font-bold text-gray-500 uppercase">
                   <ImageIcon className="shrink-0" />
                   <span className="truncate">{item.referencia}</span>
                 </div>
               )}
-              <p className="text-sm text-gray-600 italic dark:text-gray-300">
+              <p className="text-sm text-gray-600 italic">
                 &ldquo;{item.observacoes || 'Sem notas.'}&rdquo;
               </p>
-              {geminiEnabled && (
-                <button
-                  onClick={() => handleGeraRotina(item)}
-                  className="flex items-center gap-2 rounded-xl bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-600 transition-colors hover:bg-indigo-100 dark:bg-indigo-900/20 dark:text-indigo-400 dark:hover:bg-indigo-900/40"
-                >
-                  <Sparkles className="h-3.5 w-3.5" />
-                  Gerar Rotina com IA
-                </button>
-              )}
             </div>
           </Card>
           </SortableItem>
         ))}
 
         {filteredItems.length === 0 && (
-          <div className="col-span-full rounded-[32px] border border-dashed border-gray-200 bg-white py-20 text-center">
+          <div className="col-span-full rounded border border-dashed border-gray-200 bg-white py-20 text-center">
             <p className="font-medium text-gray-400 italic">
               Cadastre seu estilo de corte para começar.
             </p>
@@ -169,31 +149,12 @@ export function Cabelo() {
         )}
       </SortableGrid>
 
-      {/* Modal IA — Rotina */}
-      <Modal
-        isOpen={isAIModalOpen}
-        onClose={() => { setIsAIModalOpen(false); resetAI(); }}
-        title="Rotina Recomendada ✨"
-      >
-        {aiLoading && (
-          <div className="flex h-32 items-center justify-center">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-indigo-500" />
-          </div>
-        )}
-        {aiError && <p className="text-sm text-red-500">Erro ao gerar. Verifique a chave Gemini.</p>}
-        {!aiLoading && !aiError && aiResult && (
-          <p className="whitespace-pre-wrap text-sm leading-relaxed text-gray-700 dark:text-gray-300">
-            {aiResult}
-          </p>
-        )}
-      </Modal>
-
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Estilo de Cabelo">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <label
               htmlFor="cabelo-tipoCorte"
-              className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+              className="text-xs font-bold tracking-widest text-gray-400 uppercase"
             >
               Tipo de Corte
             </label>
@@ -202,14 +163,14 @@ export function Cabelo() {
               name="tipoCorte"
               required
               defaultValue={editingItem?.tipoCorte}
-              className="w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
               placeholder="Ex: Fade, Side Part, Buzz Cut..."
             />
           </div>
           <div className="space-y-2">
             <label
               htmlFor="cabelo-referencia"
-              className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+              className="text-xs font-bold tracking-widest text-gray-400 uppercase"
             >
               Referência (Link ou Nome)
             </label>
@@ -217,7 +178,7 @@ export function Cabelo() {
               id="cabelo-referencia"
               name="referencia"
               defaultValue={editingItem?.referencia}
-              className="w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
               placeholder="Link do Pinterest ou nome da referência"
             />
           </div>
@@ -225,7 +186,7 @@ export function Cabelo() {
             <div className="space-y-2">
               <label
                 htmlFor="cabelo-frequencia"
-                className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+                className="text-xs font-bold tracking-widest text-gray-400 uppercase"
               >
                 Frequência
               </label>
@@ -234,14 +195,14 @@ export function Cabelo() {
                 name="frequencia"
                 required
                 defaultValue={editingItem?.frequencia}
-                className="w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
                 placeholder="Ex: Mensal"
               />
             </div>
             <div className="space-y-2">
               <label
                 htmlFor="cabelo-barbeiro"
-                className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+                className="text-xs font-bold tracking-widest text-gray-400 uppercase"
               >
                 Barbeiro/Local
               </label>
@@ -249,7 +210,7 @@ export function Cabelo() {
                 id="cabelo-barbeiro"
                 name="barbeiro"
                 defaultValue={editingItem?.barbeiro}
-                className="w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
                 placeholder="Nome ou Local"
               />
             </div>
@@ -257,7 +218,7 @@ export function Cabelo() {
           <div className="space-y-2">
             <label
               htmlFor="cabelo-observacoes"
-              className="text-xs font-bold tracking-widest text-gray-400 uppercase dark:text-gray-500"
+              className="text-xs font-bold tracking-widest text-gray-400 uppercase"
             >
               Observações / Produtos
             </label>
@@ -265,12 +226,12 @@ export function Cabelo() {
               id="cabelo-observacoes"
               name="observacoes"
               defaultValue={editingItem?.observacoes}
-              className="min-h-[80px] w-full rounded-2xl border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:border-gray-100 dark:focus:bg-gray-900"
+              className="min-h-[80px] w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
               placeholder="Shampoo específico, pomada mate..."
             />
           </div>
           <ImageUpload value={foto} onChange={setFoto} label="Foto de Referência" />
-          <button className="w-full rounded-2xl bg-gray-900 py-4 font-black tracking-widest text-white uppercase">
+          <button className="w-full rounded bg-gray-900 py-4 font-black tracking-widest text-white uppercase">
             Salvar
           </button>
         </form>
