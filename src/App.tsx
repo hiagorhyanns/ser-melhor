@@ -1,0 +1,49 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { lazy, Suspense } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Layout } from './components/Layout';
+import { Dashboard } from './views/Dashboard'; // eager — first paint
+
+// Lazy-loaded views: cada rota vira chunk separado no build
+const Marcas = lazy(() => import('./views/Marcas').then((m) => ({ default: m.Marcas })));
+const Lojas = lazy(() => import('./views/Lojas').then((m) => ({ default: m.Lojas })));
+const Barba = lazy(() => import('./views/Barba').then((m) => ({ default: m.Barba })));
+const Cabelo = lazy(() => import('./views/Cabelo').then((m) => ({ default: m.Cabelo })));
+const Produtos = lazy(() => import('./views/Produtos').then((m) => ({ default: m.Produtos })));
+const Roupas = lazy(() => import('./views/Roupas').then((m) => ({ default: m.Roupas })));
+const Postura = lazy(() => import('./views/Postura').then((m) => ({ default: m.Postura })));
+const Musculos = lazy(() => import('./views/Musculos').then((m) => ({ default: m.Musculos })));
+
+function PageLoader() {
+  return (
+    <div className="flex h-64 items-center justify-center">
+      <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-gray-900 dark:border-gray-700 dark:border-t-gray-100" />
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <Router>
+      <Layout>
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/marcas" element={<Marcas />} />
+            <Route path="/lojas" element={<Lojas />} />
+            <Route path="/barba" element={<Barba />} />
+            <Route path="/cabelo" element={<Cabelo />} />
+            <Route path="/produtos" element={<Produtos />} />
+            <Route path="/roupas" element={<Roupas />} />
+            <Route path="/postura" element={<Postura />} />
+            <Route path="/musculos" element={<Musculos />} />
+          </Routes>
+        </Suspense>
+      </Layout>
+    </Router>
+  );
+}
