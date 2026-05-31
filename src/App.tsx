@@ -10,6 +10,7 @@ const Produtos = lazy(() => import('./views/Produtos').then((m) => ({ default: m
 const Roupas = lazy(() => import('./views/Roupas').then((m) => ({ default: m.Roupas })));
 const Postura = lazy(() => import('./views/Postura').then((m) => ({ default: m.Postura })));
 const Musculos = lazy(() => import('./views/Musculos').then((m) => ({ default: m.Musculos })));
+const Ternos = lazy(() => import('./views/Ternos').then((m) => ({ default: m.Ternos })));
 
 function PageLoader() {
   return (
@@ -34,6 +35,7 @@ export default function App() {
             <Route path="/roupas" element={<Roupas />} />
             <Route path="/postura" element={<Postura />} />
             <Route path="/musculos" element={<Musculos />} />
+            <Route path="/ternos" element={<Ternos />} />
           </Routes>
         </Suspense>
       </Layout>

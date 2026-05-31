@@ -9,6 +9,7 @@ import {
   Shirt,
   Accessibility,
   Dumbbell,
+  Briefcase,
   Menu,
   X,
 } from 'lucide-react';
@@ -22,6 +23,7 @@ const navItems = [
   { to: '/cabelo', icon: User, label: 'Cabelo' },
   { to: '/produtos', icon: Package, label: 'Produtos' },
   { to: '/roupas', icon: Shirt, label: 'Roupas' },
+  { to: '/ternos', icon: Briefcase, label: 'Ternos' },
   { to: '/postura', icon: Accessibility, label: 'Postura' },
   { to: '/musculos', icon: Dumbbell, label: 'Músculos' },
 ];
