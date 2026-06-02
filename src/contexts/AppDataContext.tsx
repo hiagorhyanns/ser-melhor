@@ -1,15 +1,16 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import type { AppData, BaseItem } from '../types';
+import { SEED_LOJAS, SEED_ROUPAS, SEED_PRODUTOS } from '../data/seed';
 
 const STORAGE_KEY = 'vestir_melhor_data';
 
 const INITIAL_DATA: AppData = {
   marcas: [],
-  lojas: [],
+  lojas: SEED_LOJAS,
   barba: [],
   cabelo: [],
-  produtos: [],
-  roupas: [],
+  produtos: SEED_PRODUTOS,
+  roupas: SEED_ROUPAS,
   postura: [
     {
       id: '1',
@@ -84,7 +85,16 @@ export function AppDataProvider({ children }: { children: React.ReactNode }) {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       try {
-        return JSON.parse(saved) as AppData;
+        const parsed = JSON.parse(saved) as AppData;
+        // Backfill: se uma coleção semeada estiver vazia no localStorage
+        // (ex.: visita antiga antes do seed), preenche com o seed do código.
+        // Não sobrescreve dados existentes do usuário.
+        return {
+          ...parsed,
+          lojas: parsed.lojas?.length ? parsed.lojas : INITIAL_DATA.lojas,
+          roupas: parsed.roupas?.length ? parsed.roupas : INITIAL_DATA.roupas,
+          produtos: parsed.produtos?.length ? parsed.produtos : INITIAL_DATA.produtos,
+        };
       } catch {
         return INITIAL_DATA;
       }
