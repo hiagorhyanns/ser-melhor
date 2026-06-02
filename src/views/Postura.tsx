@@ -8,6 +8,33 @@ import { Accessibility } from 'lucide-react';
 import { PosturaItem } from '../types';
 import { SortableGrid, SortableItem } from '../components/SortableGrid';
 
+const GUIDE_POSTURA = [
+  {
+    label: 'OS 3 PILARES',
+    titulo: 'Fundamentos',
+    texto:
+      'Ombros para trás e para baixo. Peito ligeiramente para frente. Olhos no horizonte — queixo nivelado. Mantenha esses 3 e a postura corrige naturalmente.',
+  },
+  {
+    label: 'EXERCÍCIO CHAVE',
+    titulo: 'Dead Hang Diário',
+    texto:
+      '30-60 segundos pendurado na barra por dia. Descomprime toda a coluna. Abre os ombros. Melhora a postura em semanas. Um dos exercícios mais subestimados.',
+  },
+  {
+    label: 'VISUAL',
+    titulo: 'Impacto na Aparência',
+    texto:
+      'Postura ereta cria ilusão de 3-5 cm a mais. Ombros abertos ampliam o tórax. A roupa cai melhor em um corpo ereto. Transmite confiança e presença instantânea.',
+  },
+  {
+    label: 'ROTINA',
+    titulo: '30 Dias Para Mudar',
+    texto:
+      'Manhã: 2 min de abertura de tórax. Alarme a cada 2h para checar postura. Noite: 1 min de hip flexor stretch. Consistência de 30 dias cria o hábito permanente.',
+  },
+];
+
 export function Postura() {
   const { data, addItem, updateItem, deleteItem, toggleComplete, reorderItems } = useAppData();
   const [search, setSearch] = useState('');
@@ -58,8 +85,6 @@ export function Postura() {
   return (
     <div>
       <PageHeader
-        title="Postura"
-        description="Melhore sua presença visual através da postura. Siga as orientações e marque como concluído ao praticar."
         onAdd={() => {
           setEditingItem(null);
           setIsModalOpen(true);
@@ -81,6 +106,19 @@ export function Postura() {
           </div>
         }
       />
+
+      {/* ── Guia ── */}
+      <div className="-mx-4 mb-6 overflow-x-auto px-4 md:mx-0 md:px-0">
+        <div className="flex gap-3 pb-1" style={{ width: 'max-content' }}>
+          {GUIDE_POSTURA.map((card) => (
+            <div key={card.titulo} className="w-56 shrink-0 rounded border border-zinc-100 bg-white p-4 shadow-sm">
+              <p className="mb-1 text-[9px] font-bold tracking-widest text-zinc-400 uppercase">{card.label}</p>
+              <p className="mb-1.5 text-sm font-bold text-zinc-900">{card.titulo}</p>
+              <p className="text-xs leading-relaxed text-zinc-500">{card.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
 
       <SortableGrid
         ids={filteredItems.map((i) => i.id)}

@@ -10,7 +10,7 @@ const FALLBACK_IMG =
   'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80';
 
 const onImgError = (e: React.SyntheticEvent<HTMLImageElement>) => {
-  (e.currentTarget as HTMLImageElement).src = FALLBACK_IMG;
+  e.currentTarget.src = FALLBACK_IMG;
 };
 
 const ESTILOS = [
@@ -465,6 +465,31 @@ const DICAS_RAPIDAS = [
   { titulo: 'Colete', texto: 'Use o colete somente em três peças completas. Com colete, o paletó pode ficar aberto sem problema.' },
 ];
 
+const FIT_REFS = [
+  {
+    img: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=400&q=80',
+    legenda: 'Regular Fit — ombro no lugar, corpo sem aperto',
+  },
+  {
+    img: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?auto=format&fit=crop&w=400&q=80',
+    legenda: 'Slim Fit — ajustado, moderno, calça estreita',
+  },
+  {
+    img: 'https://images.unsplash.com/photo-1583394293215-01c0cb7d41b0?auto=format&fit=crop&w=400&q=80',
+    legenda: 'Formal — lapela pico, terno completo de evento',
+  },
+];
+
+const CHECKLIST_PERGUNTAS = [
+  'Qual é o tecido? É lã pura ou mistura?',
+  'A entretela é canvas ou colada?',
+  'O terno tem forro completo ou parcial?',
+  'Fazem ajuste (bainha, manga) no local?',
+  'Posso comprar o paletó e a calça separados?',
+  'Esse modelo está disponível em outros tamanhos?',
+  'Qual a política de troca se o ajuste não funcionar?',
+];
+
 // ─────────────────────────────────────────────────────────────
 // COMPONENT
 // ─────────────────────────────────────────────────────────────
@@ -708,13 +733,8 @@ export function Ternos() {
                     <p className="text-xs text-white/70">{loja.tipo}</p>
                   </div>
                   <div className="flex">
-                    {Array.from({ length: loja.avaliacao }).map((_, i) => (
-                      <span key={i} className="text-amber-300 text-sm">
-                        ★
-                      </span>
-                    ))}
-                    {Array.from({ length: 5 - loja.avaliacao }).map((_, i) => (
-                      <span key={i} className="text-white/30 text-sm">
+                    {Array.from({ length: 5 }, (_, i) => (
+                      <span key={i} className={cn('text-sm', i < loja.avaliacao ? 'text-amber-300' : 'text-white/30')}>
                         ★
                       </span>
                     ))}
@@ -798,20 +818,7 @@ export function Ternos() {
           <div>
             <h2 className="mb-3 text-base font-bold text-zinc-900">Referências visuais de caimento</h2>
             <div className="grid gap-4 sm:grid-cols-3">
-              {[
-                {
-                  img: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=400&q=80',
-                  legenda: 'Regular Fit — ombro no lugar, corpo sem aperto',
-                },
-                {
-                  img: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?auto=format&fit=crop&w=400&q=80',
-                  legenda: 'Slim Fit — ajustado, moderno, calça estreita',
-                },
-                {
-                  img: 'https://images.unsplash.com/photo-1583394293215-01c0cb7d41b0?auto=format&fit=crop&w=400&q=80',
-                  legenda: 'Formal — lapela pico, terno completo de evento',
-                },
-              ].map((ref) => (
+              {FIT_REFS.map((ref) => (
                 <div key={ref.legenda} className="overflow-hidden rounded border border-zinc-200 bg-white">
                   <img
                     src={ref.img}
@@ -829,15 +836,7 @@ export function Ternos() {
           <div className="rounded border border-zinc-200 bg-white p-5">
             <h3 className="mb-4 font-bold text-zinc-900">✅ Checklist — O que perguntar na loja</h3>
             <div className="space-y-2">
-              {[
-                'Qual é o tecido? É lã pura ou mistura?',
-                'A entretela é canvas ou colada?',
-                'O terno tem forro completo ou parcial?',
-                'Fazem ajuste (bainha, manga) no local?',
-                'Posso comprar o paletó e a calça separados?',
-                'Esse modelo está disponível em outros tamanhos?',
-                'Qual a política de troca se o ajuste não funcionar?',
-              ].map((item) => (
+              {CHECKLIST_PERGUNTAS.map((item) => (
                 <div key={item} className="flex items-center gap-3">
                   <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 border-zinc-300">
                     <div className="h-2 w-2 rounded-full bg-transparent" />

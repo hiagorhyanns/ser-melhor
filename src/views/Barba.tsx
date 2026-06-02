@@ -9,6 +9,33 @@ import { cn } from '../lib/utils';
 import { BarbaItem } from '../types';
 import { SortableGrid, SortableItem } from '../components/SortableGrid';
 
+const GUIDE_BARBA = [
+  {
+    label: 'ESTILOS',
+    titulo: 'Barba Cerrada',
+    texto:
+      'Cobre boa parte do rosto. Exige contorno 2x/semana e hidratação diária para manter o traço limpo. O estilo mais versátil do momento.',
+  },
+  {
+    label: 'FORMATO DO ROSTO',
+    titulo: 'Qual Barba Combina',
+    texto:
+      'Oval: qualquer estilo. Quadrado: barba arredondada suaviza o ângulo. Alongado: barba larga encurta. Redondo: barba angular e delineada define.',
+  },
+  {
+    label: 'PRODUTOS',
+    titulo: 'Kit Essencial',
+    texto:
+      'Aparador elétrico para o corpo. Navalha para o contorno. Óleo de barba para hidratar. Balm para controle. Nessa ordem, nesse ritual.',
+  },
+  {
+    label: 'MANUTENÇÃO',
+    titulo: 'Rotina Semanal',
+    texto:
+      'Lavar 3x/semana com shampoo específico. Hidratar com óleo após o banho (barba úmida absorve melhor). Aparar contorno a cada 3 dias.',
+  },
+];
+
 export function Barba() {
   const { data, addItem, updateItem, deleteItem, toggleComplete, reorderItems } = useAppData();
   const [search, setSearch] = useState('');
@@ -79,8 +106,6 @@ export function Barba() {
   return (
     <div>
       <PageHeader
-        title="Barba"
-        description="Rotina de cuidados com a barba. Mantenha o estilo e a manutenção em dia com checklists práticos."
         onAdd={() => {
           setEditingItem(null);
           setIsModalOpen(true);
@@ -102,6 +127,19 @@ export function Barba() {
           </div>
         }
       />
+
+      {/* ── Guia ── */}
+      <div className="-mx-4 mb-6 overflow-x-auto px-4 md:mx-0 md:px-0">
+        <div className="flex gap-3 pb-1" style={{ width: 'max-content' }}>
+          {GUIDE_BARBA.map((card) => (
+            <div key={card.titulo} className="w-56 shrink-0 rounded border border-zinc-100 bg-white p-4 shadow-sm">
+              <p className="mb-1 text-[9px] font-bold tracking-widest text-zinc-400 uppercase">{card.label}</p>
+              <p className="mb-1.5 text-sm font-bold text-zinc-900">{card.titulo}</p>
+              <p className="text-xs leading-relaxed text-zinc-500">{card.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
 
       <SortableGrid
         ids={filteredItems.map((i) => i.id)}

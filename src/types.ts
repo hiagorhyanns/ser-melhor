@@ -19,7 +19,20 @@ export interface Loja extends BaseItem {
   categoria: string;
   faixaPreco: string;
   observacao: string;
-  status: 'ver depois' | 'comprar' | 'favorita';
+  status: 'visitar' | 'ver depois' | 'comprar' | 'favorita';
+  // Localização
+  cidade?: string;
+  bairro?: string;
+  local?: string; // Shopping / Galeria / Rua
+  endereco?: string;
+  // Contato
+  telefone?: string;
+  whatsapp?: string;
+  instagram?: string; // handle (ex: lojax) ou URL completa
+  site?: string;
+  ecommerce?: string;
+  // Origem do dado
+  fonte?: string;
 }
 
 export interface BarbaItem extends BaseItem {
@@ -47,6 +60,7 @@ export interface Produto extends BaseItem {
   frequenciaUso: string;
   nota: number;
   status: 'uso diário' | 'testar' | 'comprar';
+  foto?: string;
 }
 
 export interface Roupa extends BaseItem {

@@ -9,6 +9,33 @@ import { User, ImageIcon } from 'lucide-react';
 import { CabeloItem } from '../types';
 import { SortableGrid, SortableItem } from '../components/SortableGrid';
 
+const GUIDE_CABELO = [
+  {
+    label: 'CORTES POPULARES',
+    titulo: 'Top 5 Masculinos',
+    texto:
+      'Fade: degradê nas laterais. Side Part: risco lateral clássico. Texturizado: natural e moderno. Buzz Cut: tudo curto. Undercut: topo comprido, laterais raspadas.',
+  },
+  {
+    label: 'COMO PEDIR',
+    titulo: 'Fale com o Barbeiro',
+    texto:
+      'Mostre uma foto de referência. Diga o número do fade (0, 1, 2, 3). Especifique o comprimento do topo em cm. Diga se quer contraste alto ou baixo.',
+  },
+  {
+    label: 'PRODUTOS',
+    titulo: 'Por Tipo de Cabelo',
+    texto:
+      'Fino: spray texturizador. Médio: pomada mate ou clay. Grosso: cera ou pomada brilho. Cacheado: creme leave-in + gel definidor. Menos quantidade, sempre.',
+  },
+  {
+    label: 'FREQUÊNCIA',
+    titulo: 'Quando Cortar',
+    texto:
+      'Fade: a cada 2-3 semanas para manter o degrade limpo. Cortes mais longos: a cada 4-6 semanas. Agende antes do cabelo crescer demais — mais barato manter.',
+  },
+];
+
 export function Cabelo() {
   const { data, addItem, updateItem, deleteItem, toggleComplete, reorderItems } = useAppData();
   const [search, setSearch] = useState('');
@@ -71,8 +98,6 @@ export function Cabelo() {
   return (
     <div>
       <PageHeader
-        title="Cabelo"
-        description="Organize seu corte, estilo e manutenção. Guarde referências visuais e contatos de barbeiros."
         onAdd={() => {
           setEditingItem(null);
           setFoto(undefined);
@@ -95,6 +120,19 @@ export function Cabelo() {
           </div>
         }
       />
+
+      {/* ── Guia ── */}
+      <div className="-mx-4 mb-6 overflow-x-auto px-4 md:mx-0 md:px-0">
+        <div className="flex gap-3 pb-1" style={{ width: 'max-content' }}>
+          {GUIDE_CABELO.map((card) => (
+            <div key={card.titulo} className="w-56 shrink-0 rounded border border-zinc-100 bg-white p-4 shadow-sm">
+              <p className="mb-1 text-[9px] font-bold tracking-widest text-zinc-400 uppercase">{card.label}</p>
+              <p className="mb-1.5 text-sm font-bold text-zinc-900">{card.titulo}</p>
+              <p className="text-xs leading-relaxed text-zinc-500">{card.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
 
       <SortableGrid
         ids={filteredItems.map((i) => i.id)}

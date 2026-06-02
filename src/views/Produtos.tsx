@@ -1,53 +1,141 @@
 import React, { useState, useMemo } from 'react';
 import { useAppData } from '../hooks/useAppData';
 import { PageHeader, Modal } from '../components/PageHeader';
-import { Card } from '../components/Card';
+import { ImageUpload } from '../components/ImageUpload';
 import { FilterSelect } from '../components/FilterSelect';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
-import { Package, Star } from 'lucide-react';
+import { ImageIcon, Pencil, Trash2, Star } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { Produto } from '../types';
-import { SortableGrid, SortableItem } from '../components/SortableGrid';
+
+// ── Conteúdo dos guias (somente texto) ──
+const GUIDE: Record<string, { titulo: string; blocos: string[] }> = {
+  skincare: {
+    titulo: 'Rotina de Skincare',
+    blocos: [
+      'Menos é mais — 5 produtos resolvem 95% das necessidades. O segredo é a constância, não a quantidade.',
+      'Manhã: sabonete facial + hidratante com FPS (protetor solar é inegociável). Noite: sabonete + hidratante simples para recuperar a pele enquanto você dorme.',
+      '1x por semana: esfoliante para renovar a pele e desobstruir os poros. Pele limpa e hidratada é a base de qualquer presença visual.',
+    ],
+  },
+  perfume: {
+    titulo: 'Como Usar Perfume',
+    blocos: [
+      'Aplique nos pontos de calor: pulsos, pescoço e atrás das orelhas. O calor do corpo difunde a fragrância ao longo do dia.',
+      'Nunca esfregue os pulsos depois de aplicar — o atrito quebra as moléculas e encurta a duração. Borrife e deixe secar naturalmente.',
+      'Eau de Parfum dura de 6 a 8 horas; Eau de Toilette, menos. Aromas frescos e cítricos de dia; amadeirados e intensos à noite.',
+    ],
+  },
+  cabelo: {
+    titulo: 'Produto por Resultado',
+    blocos: [
+      'Escolha o produto pelo acabamento que você quer, não pela marca. Comece sempre com pouca quantidade — dá para adicionar, não dá para tirar.',
+      'Brilho forte: gel ou pomada brilhosa. Brilho suave: clay ou pasta. Sem brilho (efeito natural): pomada matte.',
+      'Volume: mousse aplicado no cabelo úmido. Cachos definidos: creme leave-in + fixador leve. Finalize sempre com o cabelo quase seco.',
+    ],
+  },
+  prioridade: {
+    titulo: 'O Que Vale Comprar',
+    blocos: [
+      'Comece pelo essencial e construa aos poucos. Não precisa de prateleira cheia para estar bem cuidado.',
+      'Ordem de prioridade: 1) Protetor solar diário (obrigatório). 2) Hidratante facial. 3) Sabonete específico para o rosto. 4) Um bom perfume — alto impacto na percepção.',
+      'Sérum, ácidos e tônicos são passos avançados: só entram depois que o básico já virou hábito. Invista no que você usa todo dia.',
+    ],
+  },
+};
+
+const TABS = [
+  { id: 'referencias', label: 'Referências' },
+  { id: 'skincare', label: 'Skincare' },
+  { id: 'perfume', label: 'Perfume' },
+  { id: 'cabelo', label: 'Cabelo' },
+  { id: 'prioridade', label: 'Prioridade' },
+];
+
+const STATUS_BADGE: Record<Produto['status'], string> = {
+  'uso diário': 'bg-emerald-100 text-emerald-700',
+  testar: 'bg-indigo-100 text-indigo-700',
+  comprar: 'bg-gray-100 text-gray-600',
+};
+
+const inputCls =
+  'w-full rounded border border-transparent bg-gray-50 p-3 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white';
+const labelCls = 'text-xs font-bold tracking-widest text-gray-400 uppercase';
+
+function InfoRow({ label, value }: { label: string; value?: string }) {
+  if (!value) return null;
+  return (
+    <div>
+      <p className={labelCls}>{label}</p>
+      <p className="mt-0.5 text-sm font-medium text-gray-800">{value}</p>
+    </div>
+  );
+}
 
 export function Produtos() {
-  const { data, addItem, updateItem, deleteItem, toggleComplete, reorderItems } = useAppData();
-  const [search, setSearch] = useState('');
-  const [completedFilter, setCompletedFilter] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { data, addItem, updateItem, deleteItem } = useAppData();
+  const [activeTab, setActiveTab] = useState('referencias');
+
+  const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Produto | null>(null);
+  const [foto, setFoto] = useState<string | undefined>(undefined);
 
+  const [viewItem, setViewItem] = useState<Produto | null>(null);
+
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [categoriaFilter, setCategoriaFilter] = useState('');
   const debouncedSearch = useDebouncedValue(search, 200);
-  const hasActiveFilters = completedFilter !== '' || statusFilter !== '';
+  const hasActiveFilters = statusFilter !== '' || categoriaFilter !== '';
 
-  const filteredItems = useMemo(() => {
+  const categoriaOptions = useMemo(() => {
+    const set = new Set<string>();
+    data.produtos.forEach((p) => p.categoria && set.add(p.categoria));
+    return [...set].sort().map((c) => ({ value: c, label: c }));
+  }, [data.produtos]);
+
+  const filtered = useMemo(() => {
     const q = debouncedSearch.toLowerCase();
-    return data.produtos.filter((item) => {
+    return data.produtos.filter((p) => {
       if (q) {
-        const matches =
-          item.nome.toLowerCase().includes(q) ||
-          item.categoria.toLowerCase().includes(q) ||
-          item.marca.toLowerCase().includes(q) ||
-          item.frequenciaUso.toLowerCase().includes(q);
-        if (!matches) return false;
+        const hay = [p.nome, p.marca, p.categoria, p.frequenciaUso]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase();
+        if (!hay.includes(q)) return false;
       }
-      if (completedFilter === 'pendente' && item.completed) return false;
-      if (completedFilter === 'concluido' && !item.completed) return false;
-      if (statusFilter && item.status !== statusFilter) return false;
+      if (statusFilter && p.status !== statusFilter) return false;
+      if (categoriaFilter && p.categoria !== categoriaFilter) return false;
       return true;
     });
-  }, [data.produtos, debouncedSearch, completedFilter, statusFilter]);
+  }, [data.produtos, debouncedSearch, statusFilter, categoriaFilter]);
+
+  const openNew = () => {
+    setEditingItem(null);
+    setFoto(undefined);
+    setIsFormOpen(true);
+  };
+
+  const openEdit = (item: Produto) => {
+    setViewItem(null);
+    setEditingItem(item);
+    setFoto(item.foto);
+    setIsFormOpen(true);
+  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
+    const f = new FormData(e.currentTarget);
+    const str = (k: string) => ((f.get(k) as string) || '').trim();
+    const notaRaw = str('nota');
     const itemData = {
-      nome: formData.get('nome') as string,
-      categoria: formData.get('categoria') as string,
-      marca: formData.get('marca') as string,
-      frequenciaUso: formData.get('frequenciaUso') as string,
-      nota: Number(formData.get('nota')),
-      status: formData.get('status') as Produto['status'],
+      nome: str('nome'),
+      categoria: str('categoria'),
+      marca: str('marca'),
+      frequenciaUso: str('frequenciaUso'),
+      nota: notaRaw ? Number(notaRaw) : 0,
+      status: (f.get('status') as Produto['status']) || 'uso diário',
+      foto,
     };
 
     if (editingItem) {
@@ -61,33 +149,25 @@ export function Produtos() {
       });
     }
 
-    setIsModalOpen(false);
+    setIsFormOpen(false);
     setEditingItem(null);
+    setFoto(undefined);
+  };
+
+  const handleDelete = (id: string) => {
+    deleteItem('produtos', id);
+    setViewItem(null);
   };
 
   return (
     <div>
       <PageHeader
-        title="Produtos"
-        description="Cadastre seus produtos de cuidado pessoal. Perfumes, hidratantes, pomadas e protetores solares em um só lugar."
-        onAdd={() => {
-          setEditingItem(null);
-          setIsModalOpen(true);
-        }}
+        onAdd={openNew}
         searchValue={search}
         onSearchChange={setSearch}
         hasActiveFilters={hasActiveFilters}
         filterPanel={
           <div className="flex flex-wrap gap-4">
-            <FilterSelect
-              label="Conclusão"
-              value={completedFilter}
-              onChange={setCompletedFilter}
-              options={[
-                { value: 'pendente', label: 'Pendente' },
-                { value: 'concluido', label: 'Concluído' },
-              ]}
-            />
             <FilterSelect
               label="Status"
               value={statusFilter}
@@ -98,135 +178,228 @@ export function Produtos() {
                 { value: 'comprar', label: 'Comprar' },
               ]}
             />
+            {categoriaOptions.length > 0 && (
+              <FilterSelect
+                label="Categoria"
+                value={categoriaFilter}
+                onChange={setCategoriaFilter}
+                options={categoriaOptions}
+              />
+            )}
           </div>
         }
       />
 
-      <SortableGrid
-        ids={filteredItems.map((i) => i.id)}
-        onReorder={(from, to) => reorderItems('produtos', from, to)}
-        className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
-        disabled={hasActiveFilters || !!debouncedSearch}
-      >
-        {filteredItems.map((item) => (
-          <SortableItem id={item.id} key={item.id}>
-          <Card
-            title={item.nome}
-            subtitle={`${item.marca} • ${item.categoria}`}
-            completed={item.completed}
-            onToggle={() => toggleComplete('produtos', item.id)}
-            onDelete={() => deleteItem('produtos', item.id)}
-            onEdit={() => {
-              setEditingItem(item);
-              setIsModalOpen(true);
-            }}
-            icon={<Package />}
-            footer={
-              <div className="flex items-center gap-4">
-                <span
-                  className={cn(
-                    'rounded-md px-2 py-1 text-[10px] font-bold tracking-wider uppercase',
-                    item.status === 'uso diário'
-                      ? 'bg-emerald-100 text-emerald-700'
-                      : item.status === 'testar'
-                        ? 'bg-indigo-100 text-indigo-700'
-                        : 'bg-gray-100 text-gray-600',
-                  )}
-                >
-                  {item.status}
-                </span>
-                <div className="flex items-center gap-0.5">
-                  <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-                  <span className="text-xs text-gray-900">{item.nota}</span>
-                </div>
-              </div>
-            }
+      {/* Tab nav */}
+      <div className="mb-6 flex gap-0 overflow-x-auto border-b border-zinc-200">
+        {TABS.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={cn(
+              'whitespace-nowrap border-b-2 px-4 py-2.5 text-sm font-medium transition-all',
+              activeTab === tab.id
+                ? 'border-zinc-900 text-zinc-900'
+                : 'border-transparent text-zinc-400 hover:text-zinc-700',
+            )}
           >
-            <p className="text-xs font-bold tracking-widest text-gray-500 uppercase">
-              Frequência: <span className="text-gray-900">{item.frequenciaUso}</span>
-            </p>
-          </Card>
-          </SortableItem>
+            {tab.label}
+          </button>
         ))}
+      </div>
 
-        {filteredItems.length === 0 && (
-          <div className="col-span-full rounded border border-dashed border-gray-200 bg-white py-20 text-center">
-            <p className="font-medium text-gray-400 italic">Nenhum produto cadastrado.</p>
+      {/* ── REFERÊNCIAS (Pinterest) ── */}
+      {activeTab === 'referencias' && (
+        <div>
+
+          {filtered.length === 0 ? (
+            <div className="rounded border border-dashed border-gray-200 bg-white py-20 text-center">
+              <p className="font-medium text-gray-400 italic">
+                {data.produtos.length === 0
+                  ? 'Nenhum produto ainda. Adicione o primeiro!'
+                  : 'Nenhum produto encontrado com os filtros aplicados.'}
+              </p>
+            </div>
+          ) : (
+            <div className="columns-2 gap-4 [column-fill:_balance] sm:columns-3 lg:columns-4 [&>*]:mb-4">
+              {filtered.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => setViewItem(item)}
+                  className="group block w-full break-inside-avoid overflow-hidden rounded border border-gray-100 bg-white text-left shadow-sm transition-all hover:shadow-md"
+                >
+                  {item.foto ? (
+                    <img
+                      src={item.foto}
+                      alt={item.nome || 'Produto'}
+                      loading="lazy"
+                      className="w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                    />
+                  ) : (
+                    <div className="flex aspect-square w-full items-center justify-center bg-gray-100 text-gray-300">
+                      <ImageIcon className="h-10 w-10" />
+                    </div>
+                  )}
+                  {(item.nome || item.marca) && (
+                    <p className="truncate px-3 py-2 text-xs font-medium text-gray-700">
+                      {item.nome || item.marca}
+                    </p>
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── TABS DE TEXTO ── */}
+      {activeTab !== 'referencias' && GUIDE[activeTab] && (
+        <div className="mx-auto max-w-2xl">
+          <h2 className="mb-4 text-2xl font-black tracking-tight text-gray-900 uppercase italic">
+            {GUIDE[activeTab].titulo}
+          </h2>
+          <div className="space-y-4">
+            {GUIDE[activeTab].blocos.map((bloco, i) => (
+              <p key={i} className="text-base leading-relaxed text-gray-600">
+                {bloco}
+              </p>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── POPUP: imagem + informações lado a lado ── */}
+      <Modal
+        isOpen={!!viewItem}
+        onClose={() => setViewItem(null)}
+        title={viewItem?.nome || viewItem?.marca || 'Produto'}
+        maxWidth="max-w-3xl"
+      >
+        {viewItem && (
+          <div className="grid gap-6 md:grid-cols-2">
+            <div className="overflow-hidden rounded bg-gray-100">
+              {viewItem.foto ? (
+                <img src={viewItem.foto} alt={viewItem.nome || 'Produto'} className="w-full object-cover" />
+              ) : (
+                <div className="flex aspect-square items-center justify-center text-gray-300">
+                  <ImageIcon className="h-12 w-12" />
+                </div>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-3">
+                {viewItem.status && (
+                  <span
+                    className={cn(
+                      'w-fit rounded-md px-2 py-1 text-[10px] font-bold tracking-wider uppercase',
+                      STATUS_BADGE[viewItem.status],
+                    )}
+                  >
+                    {viewItem.status}
+                  </span>
+                )}
+                {!!viewItem.nota && (
+                  <span className="flex items-center gap-1 text-sm font-bold text-gray-900">
+                    <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+                    {viewItem.nota}/10
+                  </span>
+                )}
+              </div>
+              <InfoRow label="Marca" value={viewItem.marca} />
+              <InfoRow label="Categoria" value={viewItem.categoria} />
+              <InfoRow label="Frequência de uso" value={viewItem.frequenciaUso} />
+
+              {!viewItem.marca && !viewItem.categoria && !viewItem.frequenciaUso && (
+                <p className="text-sm text-gray-400 italic">Sem informações adicionais.</p>
+              )}
+
+              <div className="mt-auto flex gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => openEdit(viewItem)}
+                  className="flex flex-1 items-center justify-center gap-2 rounded bg-gray-900 py-2.5 text-sm font-bold text-white transition-colors hover:bg-gray-800"
+                >
+                  <Pencil className="h-4 w-4" />
+                  Editar
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDelete(viewItem.id)}
+                  aria-label="Remover"
+                  className="flex items-center justify-center rounded border border-gray-200 px-3 text-gray-400 transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-500"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
           </div>
         )}
-      </SortableGrid>
+      </Modal>
 
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Novo Produto">
-        <form onSubmit={handleSubmit} className="space-y-6">
+      {/* ── FORM: adicionar / editar (só imagem necessária) ── */}
+      <Modal
+        isOpen={isFormOpen}
+        onClose={() => setIsFormOpen(false)}
+        title={editingItem ? 'Editar Produto' : 'Novo Produto'}
+      >
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <ImageUpload value={foto} onChange={setFoto} label="Imagem do produto" />
+
+          <p className="text-xs text-gray-400">
+            Só a imagem é necessária. Os campos abaixo são opcionais — preencha se quiser.
+          </p>
+
           <div className="space-y-2">
-            <label
-              htmlFor="produto-nome"
-              className="text-xs font-bold tracking-widest text-gray-400 uppercase"
-            >
+            <label htmlFor="produto-nome" className={labelCls}>
               Nome do Produto
             </label>
             <input
               id="produto-nome"
               name="nome"
-              required
               defaultValue={editingItem?.nome}
-              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
+              className={inputCls}
+              placeholder="Ex: Pomada modeladora matte"
             />
           </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label
-                htmlFor="produto-marca"
-                className="text-xs font-bold tracking-widest text-gray-400 uppercase"
-              >
+              <label htmlFor="produto-marca" className={labelCls}>
                 Marca
               </label>
-              <input
-                id="produto-marca"
-                name="marca"
-                required
-                defaultValue={editingItem?.marca}
-                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
-              />
+              <input id="produto-marca" name="marca" defaultValue={editingItem?.marca} className={inputCls} />
             </div>
             <div className="space-y-2">
-              <label
-                htmlFor="produto-categoria"
-                className="text-xs font-bold tracking-widest text-gray-400 uppercase"
-              >
+              <label htmlFor="produto-categoria" className={labelCls}>
                 Categoria
               </label>
               <input
                 id="produto-categoria"
                 name="categoria"
-                required
                 defaultValue={editingItem?.categoria}
-                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
+                className={inputCls}
+                placeholder="Perfume, Cabelo..."
               />
             </div>
           </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label
-                htmlFor="produto-frequenciaUso"
-                className="text-xs font-bold tracking-widest text-gray-400 uppercase"
-              >
+              <label htmlFor="produto-frequenciaUso" className={labelCls}>
                 Frequência de Uso
               </label>
               <input
                 id="produto-frequenciaUso"
                 name="frequenciaUso"
-                required
                 defaultValue={editingItem?.frequenciaUso}
-                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
+                className={inputCls}
                 placeholder="Ex: Diário"
               />
             </div>
             <div className="space-y-2">
-              <label
-                htmlFor="produto-nota"
-                className="text-xs font-bold tracking-widest text-gray-400 uppercase"
-              >
+              <label htmlFor="produto-nota" className={labelCls}>
                 Nota (0-10)
               </label>
               <input
@@ -235,30 +408,28 @@ export function Produtos() {
                 type="number"
                 min="0"
                 max="10"
-                required
-                defaultValue={editingItem?.nota || 8}
-                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
+                defaultValue={editingItem?.nota || ''}
+                className={inputCls}
               />
             </div>
           </div>
+
           <div className="space-y-2">
-            <label
-              htmlFor="produto-status"
-              className="text-xs font-bold tracking-widest text-gray-400 uppercase"
-            >
+            <label htmlFor="produto-status" className={labelCls}>
               Status
             </label>
             <select
               id="produto-status"
               name="status"
               defaultValue={editingItem?.status || 'uso diário'}
-              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
+              className={inputCls}
             >
               <option value="uso diário">Uso Diário</option>
               <option value="testar">Testar</option>
               <option value="comprar">Comprar</option>
             </select>
           </div>
+
           <button className="w-full rounded bg-gray-900 py-4 font-black tracking-widest text-white uppercase">
             Salvar
           </button>

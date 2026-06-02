@@ -4,8 +4,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../lib/utils';
 
 interface PageHeaderProps {
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
   onAdd: () => void;
   searchValue: string;
   onSearchChange: (val: string) => void;
@@ -34,24 +34,37 @@ export function PageHeader({
 }: PageHeaderProps) {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
+  const hasHeader = !!(title || description);
+
+  const addButton = (full: boolean) => (
+    <button
+      type="button"
+      onClick={onAdd}
+      className={cn(
+        'flex shrink-0 items-center justify-center gap-2 rounded bg-gray-900 font-bold whitespace-nowrap text-white shadow-lg shadow-gray-200 transition-all hover:-translate-y-0.5 hover:bg-gray-800 active:translate-y-0',
+        full ? 'w-full px-6 py-3 md:w-auto' : 'px-5 py-4',
+      )}
+    >
+      <Plus className="h-5 w-5" />
+      <span className={full ? '' : 'hidden sm:inline'}>ADICIONAR ITEM</span>
+    </button>
+  );
+
   return (
     <div className="mb-10 flex flex-col gap-8">
-      <div className="flex flex-col justify-between gap-6 md:flex-row md:items-center">
-        <div>
-          <h1 className="mb-2 text-4xl font-black tracking-tight text-gray-900 uppercase">
-            {title}
-          </h1>
-          <p className="max-w-xl font-medium text-gray-500">{description}</p>
+      {hasHeader && (
+        <div className="flex flex-col justify-between gap-6 md:flex-row md:items-center">
+          <div>
+            {title && (
+              <h1 className="mb-2 text-4xl font-black tracking-tight text-gray-900 uppercase">
+                {title}
+              </h1>
+            )}
+            {description && <p className="max-w-xl font-medium text-gray-500">{description}</p>}
+          </div>
+          {addButton(true)}
         </div>
-        <button
-          type="button"
-          onClick={onAdd}
-          className="flex items-center justify-center gap-2 rounded bg-gray-900 px-6 py-3 font-bold whitespace-nowrap text-white shadow-lg shadow-gray-200 transition-all hover:-translate-y-0.5 hover:bg-gray-800 active:translate-y-0"
-        >
-          <Plus className="h-5 w-5" />
-          ADICIONAR ITEM
-        </button>
-      </div>
+      )}
 
       <div className="flex items-center gap-4">
         <div className="group relative flex-1">
@@ -86,6 +99,7 @@ export function PageHeader({
             )}
           </button>
         )}
+        {!hasHeader && addButton(false)}
       </div>
 
       <AnimatePresence initial={false}>
@@ -112,9 +126,11 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   children: React.ReactNode;
+  /** Classe de largura máxima (ex: "max-w-3xl"). Padrão "max-w-lg". */
+  maxWidth?: string;
 }
 
-export function Modal({ isOpen, onClose, title, children }: ModalProps) {
+export function Modal({ isOpen, onClose, title, children, maxWidth = 'max-w-lg' }: ModalProps) {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -131,7 +147,10 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="pointer-events-auto max-h-[90vh] w-full max-w-lg overflow-y-auto rounded bg-white p-8 text-gray-900 shadow-2xl"
+              className={cn(
+                'pointer-events-auto max-h-[90vh] w-full overflow-y-auto rounded bg-white p-8 text-gray-900 shadow-2xl',
+                maxWidth,
+              )}
             >
               <div className="mb-8 flex items-center justify-between">
                 <h2 className="text-2xl font-black tracking-tight uppercase italic">{title}</h2>

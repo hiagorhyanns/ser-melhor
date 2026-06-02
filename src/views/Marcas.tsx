@@ -10,6 +10,27 @@ import { cn } from '../lib/utils';
 import { Marca } from '../types';
 import { SortableGrid, SortableItem } from '../components/SortableGrid';
 
+const GUIDE_MARCAS = [
+  {
+    label: 'FAST FASHION',
+    titulo: 'Custo-Benefício',
+    texto:
+      'Zara, H&M, Renner: tendências atuais a preço acessível. Qualidade média. Ideal para peças de moda — compre, use, substitua. Não invista muito nessas peças.',
+  },
+  {
+    label: 'PREMIUM',
+    titulo: 'Quando Vale Pagar Mais',
+    texto:
+      'Em básicos que duram: camisetas, jeans, sapatos. Aramis, Forum, Lafer têm melhor caimento no corpo brasileiro. Invista em 3-5 peças-âncora de qualidade.',
+  },
+  {
+    label: 'QUALIDADE',
+    titulo: 'Sinais Para Identificar',
+    texto:
+      'Costura reta e firme. Botões bem presos (puxa e não cede). Tecido com peso — não translúcido. Acabamento interno caprichado. Etiqueta com composição do tecido.',
+  },
+];
+
 export function Marcas() {
   const { data, addItem, updateItem, deleteItem, toggleComplete, reorderItems } = useAppData();
   const [search, setSearch] = useState('');
@@ -71,8 +92,6 @@ export function Marcas() {
   return (
     <div>
       <PageHeader
-        title="Marcas"
-        description="Gerencie suas marcas favoritas de roupas, perfumes e acessórios. Defina seu nível de interesse e tenha referências rápidas."
         onAdd={() => {
           setEditingItem(null);
           setFoto(undefined);
@@ -104,6 +123,19 @@ export function Marcas() {
           </div>
         }
       />
+
+      {/* ── Guia ── */}
+      <div className="-mx-4 mb-6 overflow-x-auto px-4 md:mx-0 md:px-0">
+        <div className="flex gap-3 pb-1" style={{ width: 'max-content' }}>
+          {GUIDE_MARCAS.map((card) => (
+            <div key={card.titulo} className="w-56 shrink-0 rounded border border-zinc-100 bg-white p-4 shadow-sm">
+              <p className="mb-1 text-[9px] font-bold tracking-widest text-zinc-400 uppercase">{card.label}</p>
+              <p className="mb-1.5 text-sm font-bold text-zinc-900">{card.titulo}</p>
+              <p className="text-xs leading-relaxed text-zinc-500">{card.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
 
       <SortableGrid
         ids={filteredItems.map((i) => i.id)}

@@ -26,7 +26,7 @@ export default function App() {
       <Layout>
         <Suspense fallback={<PageLoader />}>
           <Routes>
-            <Route path="/" element={<Navigate to="/marcas" replace />} />
+            <Route path="/" element={<Navigate to="/roupas" replace />} />
             <Route path="/marcas" element={<Marcas />} />
             <Route path="/lojas" element={<Lojas />} />
             <Route path="/barba" element={<Barba />} />

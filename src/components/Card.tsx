@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle2, Trash2, Edit2 } from 'lucide-react';
+import { CheckCircle2, Trash2, Edit2, Store } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { motion } from 'motion/react';
 
@@ -13,6 +13,8 @@ interface CardProps {
   subtitle?: string;
   children?: React.ReactNode;
   icon?: React.ReactNode;
+  /** URL de logo. Renderiza num quadro branco; cai para `icon`/Store se falhar. */
+  iconImage?: string;
   footer?: React.ReactNode;
 }
 
@@ -25,6 +27,7 @@ export function Card({
   subtitle,
   children,
   icon,
+  iconImage,
   footer,
 }: CardProps) {
   return (
@@ -39,18 +42,27 @@ export function Card({
     >
       <div className="mb-4 flex items-start justify-between">
         <div className="flex gap-4">
-          {icon && (
+          {iconImage ? (
+            <div className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded border border-gray-100 bg-white">
+              <Store className="absolute h-5 w-5 text-gray-300" />
+              <img
+                src={iconImage}
+                alt={title}
+                loading="lazy"
+                onError={(e) => e.currentTarget.remove()}
+                className="relative h-full w-full bg-white object-contain p-1.5"
+              />
+            </div>
+          ) : icon ? (
             <div
               className={cn(
                 'flex h-12 w-12 shrink-0 items-center justify-center rounded',
-                completed
-                  ? 'bg-gray-200 text-gray-400'
-                  : 'bg-gray-900 text-white',
+                completed ? 'bg-gray-200 text-gray-400' : 'bg-gray-900 text-white',
               )}
             >
               {icon}
             </div>
-          )}
+          ) : null}
           <div>
             <div className="flex items-center gap-2">
               <h3

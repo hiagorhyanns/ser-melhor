@@ -8,6 +8,33 @@ import { Dumbbell } from 'lucide-react';
 import { MusculoItem } from '../types';
 import { SortableGrid, SortableItem } from '../components/SortableGrid';
 
+const GUIDE_MUSCULOS = [
+  {
+    label: 'PARA O VISUAL',
+    titulo: 'O Que Muda a Roupa',
+    texto:
+      'Ombros largos + costas em V: toda roupa parece melhor. Costas trabalhe primeiro. Peito + ombros: terno e camisa social ficam impecáveis com esses grupos desenvolvidos.',
+  },
+  {
+    label: 'PRIORIDADE',
+    titulo: 'Grupos por Impacto',
+    texto:
+      '1º Costas (lat pulldown, remada). 2º Ombros (press, lateral raise). 3º Peito. Core para postura. Glúteos para calça social. Coxas são o último impacto no visual.',
+  },
+  {
+    label: 'TREINO',
+    titulo: 'Para Iniciantes',
+    texto:
+      '3x/semana full body supera 5x isolado para quem começa. Progrida de carga toda semana. Durma 7-8h: é onde o músculo cresce. Proteína: 1,5-2g por kg de peso.',
+  },
+  {
+    label: 'PROPORÇÃO',
+    titulo: 'Silhueta Ideal',
+    texto:
+      'Ombro:cintura = 1,6:1 (proporção áurea). Um blazer bem ajustado simula a silhueta de atleta mesmo sem academia. Roupa no fit certo vale mais que músculo sem roupa certa.',
+  },
+];
+
 export function Musculos() {
   const { data, addItem, updateItem, deleteItem, toggleComplete, reorderItems } = useAppData();
   const [search, setSearch] = useState('');
@@ -64,8 +91,6 @@ export function Musculos() {
   return (
     <div>
       <PageHeader
-        title="Músculos"
-        description="Acompanhamento visual da sua evolução muscular. Defina objetivos por grupo muscular e exercícios chave."
         onAdd={() => {
           setEditingItem(null);
           setIsModalOpen(true);
@@ -87,6 +112,19 @@ export function Musculos() {
           </div>
         }
       />
+
+      {/* ── Guia ── */}
+      <div className="-mx-4 mb-6 overflow-x-auto px-4 md:mx-0 md:px-0">
+        <div className="flex gap-3 pb-1" style={{ width: 'max-content' }}>
+          {GUIDE_MUSCULOS.map((card) => (
+            <div key={card.titulo} className="w-56 shrink-0 rounded border border-zinc-100 bg-white p-4 shadow-sm">
+              <p className="mb-1 text-[9px] font-bold tracking-widest text-zinc-400 uppercase">{card.label}</p>
+              <p className="mb-1.5 text-sm font-bold text-zinc-900">{card.titulo}</p>
+              <p className="text-xs leading-relaxed text-zinc-500">{card.texto}</p>
+            </div>
+          ))}
+        </div>
+      </div>
 
       <SortableGrid
         ids={filteredItems.map((i) => i.id)}
