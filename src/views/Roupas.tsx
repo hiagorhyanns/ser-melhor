@@ -6,50 +6,15 @@ import { Plus, Image as ImageIcon, Pencil, Trash2, Settings, X } from 'lucide-re
 import { cn } from '../lib/utils';
 import { Roupa } from '../types';
 
-// ── Conteúdo dos guias (somente texto) ──
-const GUIDE: Record<string, { titulo: string; blocos: string[] }> = {
-  basicos: {
-    titulo: 'Guarda-Roupa Cápsula',
-    blocos: [
-      'A base do estilo masculino são poucas peças neutras que combinam entre si. Comece pelo essencial: 2 calças (azul-marinho e cáqui), 1 jeans azul-escuro, 3 camisetas brancas de qualidade, 1 camisa branca e 1 camisa azul-clara.',
-      'Para os pés: 1 Oxford ou Derby preto/marrom e 1 tênis branco minimalista. Uma peça de sobreposição (blazer cinza ou jaqueta) fecha o conjunto.',
-      'Com 8 a 10 peças bem escolhidas você monta semanas inteiras de looks sem repetir a mesma combinação. Qualidade acima de quantidade — sempre.',
-    ],
-  },
-  paleta: {
-    titulo: 'Cores que Combinam',
-    blocos: [
-      'Construa sobre uma base de neutros: preto, branco, cinza, azul-marinho, cáqui e bege. Neutros combinam entre si em qualquer ordem — é impossível errar.',
-      'Depois adicione no máximo 1 cor de destaque por look: bordô, verde-oliva, mostarda ou azul-royal. A regra de ouro: nunca mais de 3 cores no corpo inteiro.',
-      'Tons terrosos passam sofisticação no dia a dia. Azul-marinho substitui o preto com mais elegância para o trabalho. Branco é o coringa que ilumina qualquer combinação.',
-    ],
-  },
-  formalidade: {
-    titulo: 'Escala de Vestimenta',
-    blocos: [
-      'Entender o nível de formalidade evita o erro de chegar over ou underdressed. A escala, do mais casual ao mais formal:',
-      'Camiseta + Jeans = Casual. Camisa + Calça = Smart Casual. Camisa + Blazer = Semi-formal. Camisa + Terno = Formal. Smoking = Black Tie.',
-      'O sapato sempre eleva um nível: trocar o tênis por um Derby transforma um look casual em smart casual sem mudar mais nada. Acessório certo (cinto, relógio) reforça a intenção.',
-    ],
-  },
-  fit: {
-    titulo: 'Caimento é Tudo',
-    blocos: [
-      'Uma roupa barata bem ajustada parece melhor que uma cara mal ajustada. O caimento é o que separa o homem bem-vestido do resto.',
-      'Pontos para conferir: a costura do ombro termina exatamente na curva do ombro; o tronco acompanha o corpo sem apertar nem sobrar; a barra da calça encosta levemente no sapato (no break ou half break).',
-      'Não confie no tamanho da etiqueta — experimente sempre. E reserve R$20 a R$50 para o ajuste do alfaiate: é o melhor investimento de estilo que existe.',
-    ],
-  },
-};
-
-// Abas fixas (referências = mural geral; demais = guias de texto)
+// Abas-mural fixas (Referências = mural geral). id = categoria usada no filtro.
 const BUILTIN_TABS = [
   { id: 'referencias', label: 'Referências' },
-  { id: 'basicos', label: 'Básicos' },
-  { id: 'paleta', label: 'Paleta' },
-  { id: 'formalidade', label: 'Formalidade' },
-  { id: 'fit', label: 'Fit' },
+  { id: 'Básicos', label: 'Básicos' },
+  { id: 'Paleta', label: 'Paleta' },
+  { id: 'Formalidade', label: 'Formalidade' },
+  { id: 'Fit', label: 'Fit' },
 ];
+const BUILTIN_CAT_LABELS = BUILTIN_TABS.filter((t) => t.id !== 'referencias').map((t) => t.label);
 
 const CATEGORIA_BASE = [
   'Look completo',
@@ -99,9 +64,10 @@ export function Roupas() {
   const [addCatOpen, setAddCatOpen] = useState(false);
   const [configOpen, setConfigOpen] = useState(false);
   const [newCat, setNewCat] = useState('');
+  const [editingCat, setEditingCat] = useState<string | null>(null);
+  const [editName, setEditName] = useState('');
 
-  // É um mural de imagens? (referências ou categoria personalizada)
-  const isBoard = activeTab === 'referencias' || customCats.includes(activeTab);
+  // Todas as abas são murais de imagem. Referências = tudo; demais filtram por categoria.
   const boardItems =
     activeTab === 'referencias'
       ? data.roupas
@@ -110,7 +76,7 @@ export function Roupas() {
   const openNew = () => {
     setEditingItem(null);
     setFoto(undefined);
-    setPresetCategoria(customCats.includes(activeTab) ? activeTab : '');
+    setPresetCategoria(activeTab !== 'referencias' ? activeTab : '');
     setIsFormOpen(true);
   };
 
@@ -173,6 +139,23 @@ export function Roupas() {
     if (activeTab === cat) setActiveTab('referencias');
   };
 
+  const saveRename = () => {
+    const novo = editName.trim();
+    if (!editingCat || !novo || novo === editingCat) {
+      setEditingCat(null);
+      return;
+    }
+    // Renomeia a categoria e reatribui as roupas que a usam
+    patchRoot({
+      roupaCategorias: customCats.map((c) => (c === editingCat ? novo : c)),
+    });
+    data.roupas
+      .filter((r) => r.categoria === editingCat)
+      .forEach((r) => updateItem('roupas', r.id, { categoria: novo }));
+    if (activeTab === editingCat) setActiveTab(novo);
+    setEditingCat(null);
+  };
+
   const tabBtn = (id: string, label: string) => (
     <button
       key={id}
@@ -218,8 +201,8 @@ export function Roupas() {
         </div>
       </div>
 
-      {/* ── MURAL (referências ou categoria personalizada) ── */}
-      {isBoard && (
+      {/* ── MURAL (toda aba é um mural de imagens) ── */}
+      {(
         <div>
           <div className="mb-5 flex items-center justify-between gap-3">
             <p className="text-sm text-zinc-500">
@@ -271,22 +254,6 @@ export function Roupas() {
               ))}
             </div>
           )}
-        </div>
-      )}
-
-      {/* ── TABS DE TEXTO ── */}
-      {!isBoard && GUIDE[activeTab] && (
-        <div className="mx-auto max-w-2xl">
-          <h2 className="mb-4 text-2xl font-black tracking-tight text-gray-900 uppercase italic">
-            {GUIDE[activeTab].titulo}
-          </h2>
-          <div className="space-y-4">
-            {GUIDE[activeTab].blocos.map((bloco, i) => (
-              <p key={i} className="text-base leading-relaxed text-gray-600">
-                {bloco}
-              </p>
-            ))}
-          </div>
         </div>
       )}
 
@@ -390,11 +357,8 @@ export function Roupas() {
                 className={inputCls}
               >
                 <option value="">—</option>
-                {CATEGORIA_BASE.map((c) => (
-                  <option key={c}>{c}</option>
-                ))}
-                {customCats
-                  .filter((c) => !CATEGORIA_BASE.includes(c))
+                {[...BUILTIN_CAT_LABELS, ...CATEGORIA_BASE, ...customCats]
+                  .filter((c, i, a) => a.indexOf(c) === i)
                   .map((c) => (
                     <option key={c}>{c}</option>
                   ))}
@@ -491,18 +455,53 @@ export function Roupas() {
             customCats.map((cat) => (
               <div
                 key={cat}
-                className="flex items-center justify-between rounded border border-gray-100 bg-gray-50 px-4 py-3"
+                className="flex items-center justify-between gap-2 rounded border border-gray-100 bg-gray-50 px-4 py-3"
               >
-                <span className="font-medium text-gray-800">{cat}</span>
-                <button
-                  type="button"
-                  onClick={() => removeCategory(cat)}
-                  aria-label={`Excluir ${cat}`}
-                  className="flex items-center gap-1 rounded px-2 py-1 text-xs font-bold text-red-500 transition-colors hover:bg-red-50"
-                >
-                  <X className="h-4 w-4" />
-                  Excluir
-                </button>
+                {editingCat === cat ? (
+                  <>
+                    <input
+                      autoFocus
+                      value={editName}
+                      onChange={(e) => setEditName(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && saveRename()}
+                      className="flex-1 rounded border border-gray-200 bg-white px-2 py-1 text-sm font-medium text-gray-900 outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={saveRename}
+                      className="rounded bg-gray-900 px-3 py-1 text-xs font-bold text-white"
+                    >
+                      Salvar
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <span className="font-medium text-gray-800">{cat}</span>
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditingCat(cat);
+                          setEditName(cat);
+                        }}
+                        aria-label={`Editar ${cat}`}
+                        className="flex items-center gap-1 rounded px-2 py-1 text-xs font-bold text-gray-500 transition-colors hover:bg-gray-100"
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                        Editar
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removeCategory(cat)}
+                        aria-label={`Excluir ${cat}`}
+                        className="flex items-center gap-1 rounded px-2 py-1 text-xs font-bold text-red-500 transition-colors hover:bg-red-50"
+                      >
+                        <X className="h-4 w-4" />
+                        Excluir
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             ))
           )}
