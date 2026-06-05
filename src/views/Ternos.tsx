@@ -1,6 +1,9 @@
 import { useState } from 'react';
-import { MapPin, Globe, ChevronRight } from 'lucide-react';
+import { MapPin, Globe, ChevronRight, Camera } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { useAppData } from '../hooks/useAppData';
+import { Modal } from '../components/PageHeader';
+import { ImageUpload } from '../components/ImageUpload';
 
 // ─────────────────────────────────────────────────────────────
 // DATA
@@ -503,7 +506,28 @@ const TABS = [
 ];
 
 export function Ternos() {
+  const { data, patchRoot } = useAppData();
   const [activeTab, setActiveTab] = useState('estilos');
+
+  // Edição de imagem do estilo (override salvo na nuvem)
+  const [editId, setEditId] = useState<string | null>(null);
+  const [editFoto, setEditFoto] = useState<string | undefined>(undefined);
+
+  const imgFor = (id: string, fallback: string) => data.ternoImagens?.[id] || fallback;
+
+  const openEditImg = (id: string) => {
+    setEditId(id);
+    setEditFoto(data.ternoImagens?.[id]);
+  };
+
+  const saveImg = () => {
+    if (!editId) return;
+    const map = { ...(data.ternoImagens ?? {}) };
+    if (editFoto) map[editId] = editFoto;
+    else delete map[editId];
+    patchRoot({ ternoImagens: map });
+    setEditId(null);
+  };
 
   return (
     <div>
@@ -541,9 +565,18 @@ export function Ternos() {
               key={estilo.id}
               className="overflow-hidden rounded border border-zinc-200 bg-white"
             >
-              <div className="grid md:grid-cols-[300px_1fr]">
+              <div className="relative grid md:grid-cols-[300px_1fr]">
+                <button
+                  type="button"
+                  onClick={() => openEditImg(estilo.id)}
+                  title="Trocar imagem"
+                  className="absolute top-2 left-2 z-10 flex items-center gap-1 rounded bg-black/55 px-2.5 py-1.5 text-xs font-medium text-white backdrop-blur transition-colors hover:bg-black/75"
+                >
+                  <Camera className="h-3.5 w-3.5" />
+                  Trocar
+                </button>
                 <img
-                  src={estilo.imagem}
+                  src={imgFor(estilo.id, estilo.imagem)}
                   alt={estilo.nome}
                   onError={onImgError}
                   className="h-60 w-full object-cover md:h-full"
@@ -848,6 +881,34 @@ export function Ternos() {
           </div>
         </div>
       )}
+
+      {/* ── MODAL: trocar imagem do estilo ── */}
+      <Modal isOpen={!!editId} onClose={() => setEditId(null)} title="Trocar Imagem do Estilo">
+        <div className="space-y-4">
+          <ImageUpload value={editFoto} onChange={setEditFoto} label="Imagem do estilo" />
+          <p className="text-xs text-gray-400">
+            Suba sua imagem. Fica salva na nuvem e aparece para todos.
+          </p>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={saveImg}
+              className="flex-1 rounded bg-gray-900 py-3 font-black tracking-widest text-white uppercase"
+            >
+              Salvar
+            </button>
+            {editId && data.ternoImagens?.[editId] && (
+              <button
+                type="button"
+                onClick={() => setEditFoto(undefined)}
+                className="rounded border border-gray-200 px-4 text-sm font-medium text-gray-500 hover:bg-gray-50"
+              >
+                Voltar ao padrão
+              </button>
+            )}
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

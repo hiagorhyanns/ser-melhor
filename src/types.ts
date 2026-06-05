@@ -102,4 +102,6 @@ export type AppData = {
   produtoCategorias?: string[];
   // Biblioteca de logos de loja reutilizáveis (chave = nome normalizado → URL)
   lojaLogos?: Record<string, string>;
+  // Imagens dos estilos de terno trocadas pelo usuário (chave = id do estilo → URL)
+  ternoImagens?: Record<string, string>;
 };
