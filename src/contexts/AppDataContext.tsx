@@ -1,8 +1,10 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import type { AppData, BaseItem } from '../types';
 import { SEED_LOJAS, SEED_ROUPAS, SEED_PRODUTOS } from '../data/seed';
+import { supabase, SUPABASE_ENABLED } from '../lib/supabase';
 
 const STORAGE_KEY = 'vestir_melhor_data';
+const STATE_ROW_ID = 1;
 
 const INITIAL_DATA: AppData = {
   marcas: [],
@@ -65,6 +67,31 @@ const INITIAL_DATA: AppData = {
   ],
 };
 
+/**
+ * Preenche coleções semeadas vazias com o seed do código.
+ * Não sobrescreve dados já existentes do usuário.
+ */
+function backfillSeed(d: AppData): AppData {
+  return {
+    ...d,
+    lojas: d.lojas?.length ? d.lojas : INITIAL_DATA.lojas,
+    roupas: d.roupas?.length ? d.roupas : INITIAL_DATA.roupas,
+    produtos: d.produtos?.length ? d.produtos : INITIAL_DATA.produtos,
+  };
+}
+
+function readLocal(): AppData {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    try {
+      return backfillSeed(JSON.parse(saved) as AppData);
+    } catch {
+      return INITIAL_DATA;
+    }
+  }
+  return INITIAL_DATA;
+}
+
 type AppDataContextValue = {
   data: AppData;
   addItem: <K extends keyof AppData>(key: K, item: AppData[K][number]) => void;
@@ -81,29 +108,94 @@ type AppDataContextValue = {
 const AppDataContext = createContext<AppDataContextValue | null>(null);
 
 export function AppDataProvider({ children }: { children: React.ReactNode }) {
-  const [data, setData] = useState<AppData>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved) as AppData;
-        // Backfill: se uma coleção semeada estiver vazia no localStorage
-        // (ex.: visita antiga antes do seed), preenche com o seed do código.
-        // Não sobrescreve dados existentes do usuário.
-        return {
-          ...parsed,
-          lojas: parsed.lojas?.length ? parsed.lojas : INITIAL_DATA.lojas,
-          roupas: parsed.roupas?.length ? parsed.roupas : INITIAL_DATA.roupas,
-          produtos: parsed.produtos?.length ? parsed.produtos : INITIAL_DATA.produtos,
-        };
-      } catch {
-        return INITIAL_DATA;
-      }
-    }
-    return INITIAL_DATA;
-  });
+  // Estado inicial: localStorage no modo offline; seed enquanto a nuvem carrega.
+  const [data, setData] = useState<AppData>(() =>
+    SUPABASE_ENABLED ? INITIAL_DATA : readLocal(),
+  );
 
+  // Guarda o último JSON sincronizado para evitar eco de realtime e regravações.
+  const lastSync = useRef<string>('');
+  // Só persiste depois do primeiro carregamento (evita sobrescrever a nuvem com o seed).
+  const ready = useRef(!SUPABASE_ENABLED);
+
+  // ── Carga inicial da nuvem + realtime (multi-device) ──
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    if (!SUPABASE_ENABLED || !supabase) return;
+    const sb = supabase; // narrowing estável dentro das closures
+    let active = true;
+
+    (async () => {
+      const { data: row, error } = await sb
+        .from('app_state')
+        .select('data')
+        .eq('id', STATE_ROW_ID)
+        .maybeSingle();
+      if (!active) return;
+
+      if (error) {
+        // Falha de rede/config → cai no localStorage para não travar o app.
+        console.error('[Supabase] load falhou, usando localStorage:', error.message);
+        setData(readLocal());
+        ready.current = true;
+        return;
+      }
+
+      if (row?.data) {
+        const merged = backfillSeed(row.data as AppData);
+        lastSync.current = JSON.stringify(merged);
+        setData(merged);
+      } else {
+        // Primeira vez: semeia a nuvem com o seed do código.
+        lastSync.current = JSON.stringify(INITIAL_DATA);
+        await sb.from('app_state').upsert({ id: STATE_ROW_ID, data: INITIAL_DATA });
+        setData(INITIAL_DATA);
+      }
+      ready.current = true;
+    })();
+
+    // Sincroniza mudanças feitas em outros dispositivos em tempo real.
+    const channel = sb
+      .channel('app_state_changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'app_state' },
+        (payload) => {
+          const incoming = (payload.new as { data?: AppData } | null)?.data;
+          if (!incoming) return;
+          const json = JSON.stringify(incoming);
+          if (json === lastSync.current) return; // eco da própria gravação
+          lastSync.current = json;
+          setData(incoming);
+        },
+      )
+      .subscribe();
+
+    return () => {
+      active = false;
+      sb.removeChannel(channel);
+    };
+  }, []);
+
+  // ── Persistência (debounced) ──
+  useEffect(() => {
+    if (!ready.current) return;
+    const json = JSON.stringify(data);
+    if (json === lastSync.current) return;
+    lastSync.current = json;
+
+    if (SUPABASE_ENABLED && supabase) {
+      const t = setTimeout(() => {
+        supabase!
+          .from('app_state')
+          .upsert({ id: STATE_ROW_ID, data, updated_at: new Date().toISOString() })
+          .then(({ error }) => {
+            if (error) console.error('[Supabase] save falhou:', error.message);
+          });
+      }, 400);
+      return () => clearTimeout(t);
+    }
+
+    localStorage.setItem(STORAGE_KEY, json);
   }, [data]);
 
   function addItem<K extends keyof AppData>(key: K, item: AppData[K][number]) {

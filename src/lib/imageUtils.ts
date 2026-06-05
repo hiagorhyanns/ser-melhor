@@ -29,3 +29,13 @@ export async function compressImage(
     reader.readAsDataURL(file);
   });
 }
+
+/** Converte um data URL (ex.: saída de compressImage) num File enviável. */
+export function dataUrlToFile(dataUrl: string, filename = 'image.jpg'): File {
+  const [header, base64] = dataUrl.split(',');
+  const mime = header.match(/:(.*?);/)?.[1] || 'image/jpeg';
+  const bin = atob(base64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new File([bytes], filename, { type: mime });
+}

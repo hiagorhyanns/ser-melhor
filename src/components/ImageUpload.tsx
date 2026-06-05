@@ -1,6 +1,7 @@
-import { useId, useRef } from 'react';
-import { compressImage } from '../lib/imageUtils';
-import { Upload, X } from 'lucide-react';
+import { useId, useRef, useState } from 'react';
+import { compressImage, dataUrlToFile } from '../lib/imageUtils';
+import { SUPABASE_ENABLED, uploadImage } from '../lib/supabase';
+import { Upload, X, Loader2 } from 'lucide-react';
 
 interface Props {
   value?: string;
@@ -20,17 +21,28 @@ export function ImageUpload({ value, onChange, label = 'Foto / Referência' }: P
   const fileId = useId();
   const fileRef = useRef<HTMLInputElement>(null);
   const urlRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
 
   const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    setUploading(true);
     try {
       const dataUrl = await compressImage(file);
-      onChange(dataUrl);
-    } catch {
-      // silently ignore compression errors
+      if (SUPABASE_ENABLED) {
+        // Nuvem: sobe a imagem comprimida pro Storage → URL pública global.
+        const url = await uploadImage(dataUrlToFile(dataUrl));
+        onChange(url);
+      } else {
+        // Offline: guarda data URL no localStorage (só local).
+        onChange(dataUrl);
+      }
+    } catch (err) {
+      console.error('[ImageUpload] falha ao processar imagem:', err);
+    } finally {
+      setUploading(false);
+      e.target.value = '';
     }
-    e.target.value = '';
   };
 
   const commitUrl = () => {
@@ -70,10 +82,11 @@ export function ImageUpload({ value, onChange, label = 'Foto / Referência' }: P
         <button
           type="button"
           onClick={() => fileRef.current?.click()}
-          className="flex shrink-0 items-center gap-2 rounded bg-gray-50 px-4 py-3 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100"
+          disabled={uploading}
+          className="flex shrink-0 items-center gap-2 rounded bg-gray-50 px-4 py-3 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 disabled:opacity-60"
         >
-          <Upload className="h-4 w-4" />
-          Upload
+          {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+          {uploading ? 'Enviando...' : 'Upload'}
         </button>
         <input
           ref={urlRef}
