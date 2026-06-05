@@ -4,7 +4,7 @@ import { PageHeader, Modal } from '../components/PageHeader';
 import { ImageUpload } from '../components/ImageUpload';
 import { FilterSelect } from '../components/FilterSelect';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
-import { ImageIcon, Pencil, Trash2, Star } from 'lucide-react';
+import { ImageIcon, Pencil, Trash2, Star, Plus, Settings, X } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { Produto } from '../types';
 
@@ -73,14 +73,20 @@ function InfoRow({ label, value }: { label: string; value?: string }) {
 }
 
 export function Produtos() {
-  const { data, addItem, updateItem, deleteItem } = useAppData();
+  const { data, addItem, updateItem, deleteItem, patchRoot } = useAppData();
+  const customCats = data.produtoCategorias ?? [];
   const [activeTab, setActiveTab] = useState('referencias');
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Produto | null>(null);
   const [foto, setFoto] = useState<string | undefined>(undefined);
+  const [presetCategoria, setPresetCategoria] = useState('');
 
   const [viewItem, setViewItem] = useState<Produto | null>(null);
+
+  const [addCatOpen, setAddCatOpen] = useState(false);
+  const [configOpen, setConfigOpen] = useState(false);
+  const [newCat, setNewCat] = useState('');
 
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
@@ -110,9 +116,14 @@ export function Produtos() {
     });
   }, [data.produtos, debouncedSearch, statusFilter, categoriaFilter]);
 
+  const isBoard = activeTab === 'referencias' || customCats.includes(activeTab);
+  const boardItems =
+    activeTab === 'referencias' ? filtered : filtered.filter((p) => p.categoria === activeTab);
+
   const openNew = () => {
     setEditingItem(null);
     setFoto(undefined);
+    setPresetCategoria(customCats.includes(activeTab) ? activeTab : '');
     setIsFormOpen(true);
   };
 
@@ -120,7 +131,22 @@ export function Produtos() {
     setViewItem(null);
     setEditingItem(item);
     setFoto(item.foto);
+    setPresetCategoria('');
     setIsFormOpen(true);
+  };
+
+  const createCategory = () => {
+    const name = newCat.trim();
+    if (!name) return;
+    if (!customCats.includes(name)) patchRoot({ produtoCategorias: [...customCats, name] });
+    setActiveTab(name);
+    setNewCat('');
+    setAddCatOpen(false);
+  };
+
+  const removeCategory = (cat: string) => {
+    patchRoot({ produtoCategorias: customCats.filter((c) => c !== cat) });
+    if (activeTab === cat) setActiveTab('referencias');
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -190,39 +216,61 @@ export function Produtos() {
         }
       />
 
-      {/* Tab nav */}
-      <div className="mb-6 flex gap-0 overflow-x-auto border-b border-zinc-200">
-        {TABS.map((tab) => (
+      {/* Tab nav + ações */}
+      <div className="mb-6 flex items-center justify-between border-b border-zinc-200">
+        <div className="flex gap-0 overflow-x-auto">
+          {[...TABS, ...customCats.map((c) => ({ id: c, label: c }))].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={cn(
+                'whitespace-nowrap border-b-2 px-4 py-2.5 text-sm font-medium transition-all',
+                activeTab === tab.id
+                  ? 'border-zinc-900 text-zinc-900'
+                  : 'border-transparent text-zinc-400 hover:text-zinc-700',
+              )}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+        <div className="flex shrink-0 items-center gap-1 pl-2">
           <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={cn(
-              'whitespace-nowrap border-b-2 px-4 py-2.5 text-sm font-medium transition-all',
-              activeTab === tab.id
-                ? 'border-zinc-900 text-zinc-900'
-                : 'border-transparent text-zinc-400 hover:text-zinc-700',
-            )}
+            type="button"
+            onClick={() => setAddCatOpen(true)}
+            aria-label="Criar categoria"
+            title="Criar nova categoria"
+            className="flex h-8 w-8 items-center justify-center rounded border border-zinc-200 text-zinc-500 transition-colors hover:border-zinc-900 hover:text-zinc-900"
           >
-            {tab.label}
+            <Plus className="h-4 w-4" />
           </button>
-        ))}
+          <button
+            type="button"
+            onClick={() => setConfigOpen(true)}
+            aria-label="Configurar categorias"
+            title="Configurar abas"
+            className="flex h-8 w-8 items-center justify-center rounded text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-700"
+          >
+            <Settings className="h-4 w-4" />
+          </button>
+        </div>
       </div>
 
-      {/* ── REFERÊNCIAS (Pinterest) ── */}
-      {activeTab === 'referencias' && (
+      {/* ── MURAL (referências ou categoria personalizada) ── */}
+      {isBoard && (
         <div>
 
-          {filtered.length === 0 ? (
+          {boardItems.length === 0 ? (
             <div className="rounded border border-dashed border-gray-200 bg-white py-20 text-center">
               <p className="font-medium text-gray-400 italic">
                 {data.produtos.length === 0
                   ? 'Nenhum produto ainda. Adicione o primeiro!'
-                  : 'Nenhum produto encontrado com os filtros aplicados.'}
+                  : 'Nenhum produto encontrado aqui.'}
               </p>
             </div>
           ) : (
             <div className="columns-2 gap-4 [column-fill:_balance] sm:columns-3 lg:columns-4 [&>*]:mb-4">
-              {filtered.map((item) => (
+              {boardItems.map((item) => (
                 <button
                   key={item.id}
                   type="button"
@@ -254,7 +302,7 @@ export function Produtos() {
       )}
 
       {/* ── TABS DE TEXTO ── */}
-      {activeTab !== 'referencias' && GUIDE[activeTab] && (
+      {!isBoard && GUIDE[activeTab] && (
         <div className="mx-auto max-w-2xl">
           <h2 className="mb-4 text-2xl font-black tracking-tight text-gray-900 uppercase italic">
             {GUIDE[activeTab].titulo}
@@ -378,10 +426,16 @@ export function Produtos() {
               <input
                 id="produto-categoria"
                 name="categoria"
-                defaultValue={editingItem?.categoria}
+                defaultValue={editingItem?.categoria || presetCategoria || ''}
                 className={inputCls}
                 placeholder="Perfume, Cabelo..."
+                list="produto-categorias"
               />
+              <datalist id="produto-categorias">
+                {customCats.map((c) => (
+                  <option key={c} value={c} />
+                ))}
+              </datalist>
             </div>
           </div>
 
@@ -434,6 +488,62 @@ export function Produtos() {
             Salvar
           </button>
         </form>
+      </Modal>
+
+      {/* ── MODAL: nova categoria ── */}
+      <Modal isOpen={addCatOpen} onClose={() => setAddCatOpen(false)} title="Nova Categoria">
+        <div className="space-y-4">
+          <p className="text-sm text-gray-500">
+            Cria uma nova aba de mural. Os produtos com essa categoria aparecem aqui.
+          </p>
+          <input
+            autoFocus
+            value={newCat}
+            onChange={(e) => setNewCat(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && createCategory()}
+            className={inputCls}
+            placeholder="Ex: Skincare, Cabelo, Perfumes..."
+          />
+          <button
+            type="button"
+            onClick={createCategory}
+            className="w-full rounded bg-gray-900 py-3 font-black tracking-widest text-white uppercase"
+          >
+            Criar
+          </button>
+        </div>
+      </Modal>
+
+      {/* ── MODAL: configurar categorias ── */}
+      <Modal isOpen={configOpen} onClose={() => setConfigOpen(false)} title="Configurar Categorias">
+        <div className="space-y-3">
+          {customCats.length === 0 ? (
+            <p className="text-sm text-gray-400 italic">
+              Nenhuma categoria personalizada. Use o + para criar.
+            </p>
+          ) : (
+            customCats.map((cat) => (
+              <div
+                key={cat}
+                className="flex items-center justify-between rounded border border-gray-100 bg-gray-50 px-4 py-3"
+              >
+                <span className="font-medium text-gray-800">{cat}</span>
+                <button
+                  type="button"
+                  onClick={() => removeCategory(cat)}
+                  aria-label={`Excluir ${cat}`}
+                  className="flex items-center gap-1 rounded px-2 py-1 text-xs font-bold text-red-500 transition-colors hover:bg-red-50"
+                >
+                  <X className="h-4 w-4" />
+                  Excluir
+                </button>
+              </div>
+            ))
+          )}
+          <p className="pt-1 text-xs text-gray-400">
+            Excluir a aba não apaga os produtos.
+          </p>
+        </div>
       </Modal>
     </div>
   );

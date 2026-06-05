@@ -3,6 +3,7 @@ import { useAppData } from '../hooks/useAppData';
 import { PageHeader, Modal } from '../components/PageHeader';
 import { Card } from '../components/Card';
 import { FilterSelect } from '../components/FilterSelect';
+import { ImageUpload } from '../components/ImageUpload';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
 import {
   Store,
@@ -45,6 +46,7 @@ const logoUrl = (site?: string) => {
   const domain = site.replace(/^https?:\/\//i, '').replace(/\/.*$/, '').replace(/^www\./i, '').trim();
   return domain ? `https://www.google.com/s2/favicons?sz=128&domain=${domain}` : '';
 };
+const normName = (n?: string) => (n || '').trim().toLowerCase();
 const igLabel = (v?: string) => {
   if (!v) return '';
   if (/^https?:\/\//i.test(v)) {
@@ -114,7 +116,8 @@ const inputCls =
 const labelCls = 'text-xs font-bold tracking-widest text-gray-400 uppercase';
 
 export function Lojas() {
-  const { data, addItem, updateItem, deleteItem, toggleComplete, reorderItems } = useAppData();
+  const { data, addItem, updateItem, deleteItem, toggleComplete, reorderItems, patchRoot } =
+    useAppData();
   const [search, setSearch] = useState('');
   const [completedFilter, setCompletedFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
@@ -122,6 +125,11 @@ export function Lojas() {
   const [categoriaFilter, setCategoriaFilter] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Loja | null>(null);
+  const [logo, setLogo] = useState<string | undefined>(undefined);
+
+  // Logo a exibir: própria → biblioteca por nome → favicon do site
+  const resolveLogo = (item: Loja) =>
+    item.logo || data.lojaLogos?.[normName(item.nome)] || logoUrl(item.site);
 
   const debouncedSearch = useDebouncedValue(search, 200);
   const hasActiveFilters =
@@ -188,6 +196,7 @@ export function Lojas() {
       ecommerce: str('ecommerce'),
       fonte: str('fonte'),
       observacao: str('observacao'),
+      logo,
       link: str('site') || str('ecommerce'), // legado
     };
 
@@ -202,12 +211,19 @@ export function Lojas() {
       });
     }
 
+    // Guarda a logo na biblioteca por nome → reutiliza em outras lojas iguais
+    if (logo && itemData.nome) {
+      patchRoot({ lojaLogos: { ...(data.lojaLogos ?? {}), [normName(itemData.nome)]: logo } });
+    }
+
     setIsModalOpen(false);
     setEditingItem(null);
+    setLogo(undefined);
   };
 
   const openNew = () => {
     setEditingItem(null);
+    setLogo(undefined);
     setIsModalOpen(true);
   };
 
@@ -286,10 +302,11 @@ export function Lojas() {
               onDelete={() => deleteItem('lojas', item.id)}
               onEdit={() => {
                 setEditingItem(item);
+                setLogo(item.logo);
                 setIsModalOpen(true);
               }}
               icon={<Store />}
-              iconImage={logoUrl(item.site)}
+              iconImage={resolveLogo(item)}
               footer={
                 <div className="flex w-full items-center justify-between gap-2">
                   <span
@@ -353,6 +370,11 @@ export function Lojas() {
         title={editingItem ? 'Editar Loja' : 'Nova Loja'}
       >
         <form onSubmit={handleSubmit} className="space-y-5">
+          <ImageUpload value={logo} onChange={setLogo} label="Logo da loja" />
+          <p className="-mt-2 text-xs text-gray-400">
+            A logo fica salva e é reutilizada em outras lojas com o mesmo nome.
+          </p>
+
           <div className="space-y-2">
             <label htmlFor="loja-nome" className={labelCls}>
               Nome da Loja

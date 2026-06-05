@@ -65,6 +65,9 @@ const INITIAL_DATA: AppData = {
       createdAt: Date.now(),
     },
   ],
+  roupaCategorias: [],
+  produtoCategorias: [],
+  lojaLogos: {},
 };
 
 /**
@@ -92,17 +95,24 @@ function readLocal(): AppData {
   return INITIAL_DATA;
 }
 
+// Apenas as chaves cujo valor é uma lista de itens (exclui categorias/logos).
+type CollectionKey = {
+  [K in keyof AppData]-?: NonNullable<AppData[K]> extends BaseItem[] ? K : never;
+}[keyof AppData];
+
 type AppDataContextValue = {
   data: AppData;
-  addItem: <K extends keyof AppData>(key: K, item: AppData[K][number]) => void;
-  updateItem: <K extends keyof AppData>(
+  addItem: <K extends CollectionKey>(key: K, item: AppData[K][number]) => void;
+  updateItem: <K extends CollectionKey>(
     key: K,
     id: string,
     updates: Partial<AppData[K][number]>,
   ) => void;
-  deleteItem: <K extends keyof AppData>(key: K, id: string) => void;
-  toggleComplete: <K extends keyof AppData>(key: K, id: string) => void;
-  reorderItems: <K extends keyof AppData>(key: K, activeId: string, overId: string) => void;
+  deleteItem: <K extends CollectionKey>(key: K, id: string) => void;
+  toggleComplete: <K extends CollectionKey>(key: K, id: string) => void;
+  reorderItems: <K extends CollectionKey>(key: K, activeId: string, overId: string) => void;
+  /** Atualiza campos da raiz (ex.: categorias personalizadas, biblioteca de logos). */
+  patchRoot: (updates: Partial<AppData>) => void;
 };
 
 const AppDataContext = createContext<AppDataContextValue | null>(null);
@@ -198,11 +208,11 @@ export function AppDataProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem(STORAGE_KEY, json);
   }, [data]);
 
-  function addItem<K extends keyof AppData>(key: K, item: AppData[K][number]) {
+  function addItem<K extends CollectionKey>(key: K, item: AppData[K][number]) {
     setData((prev) => ({ ...prev, [key]: [item, ...prev[key]] }));
   }
 
-  function updateItem<K extends keyof AppData>(
+  function updateItem<K extends CollectionKey>(
     key: K,
     id: string,
     updates: Partial<AppData[K][number]>,
@@ -215,14 +225,14 @@ export function AppDataProvider({ children }: { children: React.ReactNode }) {
     }));
   }
 
-  function deleteItem<K extends keyof AppData>(key: K, id: string) {
+  function deleteItem<K extends CollectionKey>(key: K, id: string) {
     setData((prev) => ({
       ...prev,
       [key]: (prev[key] as BaseItem[]).filter((item) => item.id !== id) as AppData[K],
     }));
   }
 
-  function reorderItems<K extends keyof AppData>(key: K, activeId: string, overId: string) {
+  function reorderItems<K extends CollectionKey>(key: K, activeId: string, overId: string) {
     setData((prev) => {
       const items = [...(prev[key] as BaseItem[])];
       const fromIdx = items.findIndex((i) => i.id === activeId);
@@ -234,7 +244,11 @@ export function AppDataProvider({ children }: { children: React.ReactNode }) {
     });
   }
 
-  function toggleComplete<K extends keyof AppData>(key: K, id: string) {
+  function patchRoot(updates: Partial<AppData>) {
+    setData((prev) => ({ ...prev, ...updates }));
+  }
+
+  function toggleComplete<K extends CollectionKey>(key: K, id: string) {
     setData((prev) => {
       const items = [...(prev[key] as BaseItem[])];
       const index = items.findIndex((i) => i.id === id);
@@ -255,7 +269,7 @@ export function AppDataProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <AppDataContext.Provider value={{ data, addItem, updateItem, deleteItem, toggleComplete, reorderItems }}>
+    <AppDataContext.Provider value={{ data, addItem, updateItem, deleteItem, toggleComplete, reorderItems, patchRoot }}>
       {children}
     </AppDataContext.Provider>
   );

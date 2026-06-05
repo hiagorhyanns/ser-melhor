@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useAppData } from '../hooks/useAppData';
 import { Modal } from '../components/PageHeader';
 import { ImageUpload } from '../components/ImageUpload';
-import { Plus, Image as ImageIcon, Pencil, Trash2 } from 'lucide-react';
+import { Plus, Image as ImageIcon, Pencil, Trash2, Settings, X } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { Roupa } from '../types';
 
-// ── Conteúdo dos guias (somente texto por enquanto) ──
+// ── Conteúdo dos guias (somente texto) ──
 const GUIDE: Record<string, { titulo: string; blocos: string[] }> = {
   basicos: {
     titulo: 'Guarda-Roupa Cápsula',
@@ -42,12 +42,25 @@ const GUIDE: Record<string, { titulo: string; blocos: string[] }> = {
   },
 };
 
-const TABS = [
+// Abas fixas (referências = mural geral; demais = guias de texto)
+const BUILTIN_TABS = [
   { id: 'referencias', label: 'Referências' },
   { id: 'basicos', label: 'Básicos' },
   { id: 'paleta', label: 'Paleta' },
   { id: 'formalidade', label: 'Formalidade' },
   { id: 'fit', label: 'Fit' },
+];
+
+const CATEGORIA_BASE = [
+  'Look completo',
+  'Camisetas',
+  'Camisas',
+  'Calças',
+  'Bermudas',
+  'Jaquetas',
+  'Tênis',
+  'Sapatos',
+  'Acessórios',
 ];
 
 const STATUS_BADGE: Record<Roupa['status'], string> = {
@@ -60,7 +73,6 @@ const inputCls =
   'w-full rounded border border-transparent bg-gray-50 p-3 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white';
 const labelCls = 'text-xs font-bold tracking-widest text-gray-400 uppercase';
 
-// Linha de info no popup de visualização
 function InfoRow({ label, value }: { label: string; value?: string }) {
   if (!value) return null;
   return (
@@ -72,18 +84,33 @@ function InfoRow({ label, value }: { label: string; value?: string }) {
 }
 
 export function Roupas() {
-  const { data, addItem, updateItem, deleteItem } = useAppData();
+  const { data, addItem, updateItem, deleteItem, patchRoot } = useAppData();
+  const customCats = data.roupaCategorias ?? [];
+
   const [activeTab, setActiveTab] = useState('referencias');
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Roupa | null>(null);
   const [foto, setFoto] = useState<string | undefined>(undefined);
+  const [presetCategoria, setPresetCategoria] = useState('');
 
   const [viewItem, setViewItem] = useState<Roupa | null>(null);
+
+  const [addCatOpen, setAddCatOpen] = useState(false);
+  const [configOpen, setConfigOpen] = useState(false);
+  const [newCat, setNewCat] = useState('');
+
+  // É um mural de imagens? (referências ou categoria personalizada)
+  const isBoard = activeTab === 'referencias' || customCats.includes(activeTab);
+  const boardItems =
+    activeTab === 'referencias'
+      ? data.roupas
+      : data.roupas.filter((r) => r.categoria === activeTab);
 
   const openNew = () => {
     setEditingItem(null);
     setFoto(undefined);
+    setPresetCategoria(customCats.includes(activeTab) ? activeTab : '');
     setIsFormOpen(true);
   };
 
@@ -91,6 +118,7 @@ export function Roupas() {
     setViewItem(null);
     setEditingItem(item);
     setFoto(item.foto);
+    setPresetCategoria('');
     setIsFormOpen(true);
   };
 
@@ -129,32 +157,75 @@ export function Roupas() {
     setViewItem(null);
   };
 
+  const createCategory = () => {
+    const name = newCat.trim();
+    if (!name) return;
+    if (!customCats.includes(name) && !BUILTIN_TABS.some((t) => t.label === name)) {
+      patchRoot({ roupaCategorias: [...customCats, name] });
+    }
+    setActiveTab(name);
+    setNewCat('');
+    setAddCatOpen(false);
+  };
+
+  const removeCategory = (cat: string) => {
+    patchRoot({ roupaCategorias: customCats.filter((c) => c !== cat) });
+    if (activeTab === cat) setActiveTab('referencias');
+  };
+
+  const tabBtn = (id: string, label: string) => (
+    <button
+      key={id}
+      onClick={() => setActiveTab(id)}
+      className={cn(
+        'whitespace-nowrap border-b-2 px-4 py-2.5 text-sm font-medium transition-all',
+        activeTab === id
+          ? 'border-zinc-900 text-zinc-900'
+          : 'border-transparent text-zinc-400 hover:text-zinc-700',
+      )}
+    >
+      {label}
+    </button>
+  );
+
   return (
     <div>
-      {/* Tab nav */}
-      <div className="mb-6 flex gap-0 overflow-x-auto border-b border-zinc-200">
-        {TABS.map((tab) => (
+      {/* Tab nav + ações (criar / configurar categorias) */}
+      <div className="mb-6 flex items-center justify-between border-b border-zinc-200">
+        <div className="flex gap-0 overflow-x-auto">
+          {BUILTIN_TABS.map((t) => tabBtn(t.id, t.label))}
+          {customCats.map((c) => tabBtn(c, c))}
+        </div>
+        <div className="flex shrink-0 items-center gap-1 pl-2">
           <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={cn(
-              'whitespace-nowrap border-b-2 px-4 py-2.5 text-sm font-medium transition-all',
-              activeTab === tab.id
-                ? 'border-zinc-900 text-zinc-900'
-                : 'border-transparent text-zinc-400 hover:text-zinc-700',
-            )}
+            type="button"
+            onClick={() => setAddCatOpen(true)}
+            aria-label="Criar categoria"
+            title="Criar nova categoria"
+            className="flex h-8 w-8 items-center justify-center rounded border border-zinc-200 text-zinc-500 transition-colors hover:border-zinc-900 hover:text-zinc-900"
           >
-            {tab.label}
+            <Plus className="h-4 w-4" />
           </button>
-        ))}
+          <button
+            type="button"
+            onClick={() => setConfigOpen(true)}
+            aria-label="Configurar categorias"
+            title="Configurar abas"
+            className="flex h-8 w-8 items-center justify-center rounded text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-700"
+          >
+            <Settings className="h-4 w-4" />
+          </button>
+        </div>
       </div>
 
-      {/* ── REFERÊNCIAS (Pinterest) ── */}
-      {activeTab === 'referencias' && (
+      {/* ── MURAL (referências ou categoria personalizada) ── */}
+      {isBoard && (
         <div>
-          <div className="mb-5 flex items-center justify-between">
+          <div className="mb-5 flex items-center justify-between gap-3">
             <p className="text-sm text-zinc-500">
-              Seu mural de referências visuais. Toque numa imagem para ver os detalhes.
+              {activeTab === 'referencias'
+                ? 'Seu mural de referências visuais. Toque numa imagem para ver os detalhes.'
+                : `Categoria "${activeTab}". Toque numa imagem para ver os detalhes.`}
             </p>
             <button
               type="button"
@@ -166,15 +237,15 @@ export function Roupas() {
             </button>
           </div>
 
-          {data.roupas.length === 0 ? (
+          {boardItems.length === 0 ? (
             <div className="rounded border border-dashed border-gray-200 bg-white py-20 text-center">
               <p className="font-medium text-gray-400 italic">
-                Nenhuma referência ainda. Adicione a primeira imagem!
+                Nenhuma imagem aqui ainda. Adicione a primeira!
               </p>
             </div>
           ) : (
             <div className="gap-4 [column-fill:_balance] columns-2 sm:columns-3 lg:columns-4 [&>*]:mb-4">
-              {data.roupas.map((item) => (
+              {boardItems.map((item) => (
                 <button
                   key={item.id}
                   type="button"
@@ -204,7 +275,7 @@ export function Roupas() {
       )}
 
       {/* ── TABS DE TEXTO ── */}
-      {activeTab !== 'referencias' && GUIDE[activeTab] && (
+      {!isBoard && GUIDE[activeTab] && (
         <div className="mx-auto max-w-2xl">
           <h2 className="mb-4 text-2xl font-black tracking-tight text-gray-900 uppercase italic">
             {GUIDE[activeTab].titulo}
@@ -219,7 +290,7 @@ export function Roupas() {
         </div>
       )}
 
-      {/* ── POPUP: imagem + informações lado a lado ── */}
+      {/* ── POPUP: imagem + informações ── */}
       <Modal
         isOpen={!!viewItem}
         onClose={() => setViewItem(null)}
@@ -281,7 +352,7 @@ export function Roupas() {
         )}
       </Modal>
 
-      {/* ── FORM: adicionar / editar (só imagem necessária) ── */}
+      {/* ── FORM: adicionar / editar ── */}
       <Modal
         isOpen={isFormOpen}
         onClose={() => setIsFormOpen(false)}
@@ -315,19 +386,18 @@ export function Roupas() {
               <select
                 id="roupa-categoria"
                 name="categoria"
-                defaultValue={editingItem?.categoria || ''}
+                defaultValue={editingItem?.categoria || presetCategoria || ''}
                 className={inputCls}
               >
                 <option value="">—</option>
-                <option>Look completo</option>
-                <option>Camisetas</option>
-                <option>Camisas</option>
-                <option>Calças</option>
-                <option>Bermudas</option>
-                <option>Jaquetas</option>
-                <option>Tênis</option>
-                <option>Sapatos</option>
-                <option>Acessórios</option>
+                {CATEGORIA_BASE.map((c) => (
+                  <option key={c}>{c}</option>
+                ))}
+                {customCats
+                  .filter((c) => !CATEGORIA_BASE.includes(c))
+                  .map((c) => (
+                    <option key={c}>{c}</option>
+                  ))}
               </select>
             </div>
             <div className="space-y-2">
@@ -384,6 +454,62 @@ export function Roupas() {
             Salvar
           </button>
         </form>
+      </Modal>
+
+      {/* ── MODAL: nova categoria ── */}
+      <Modal isOpen={addCatOpen} onClose={() => setAddCatOpen(false)} title="Nova Categoria">
+        <div className="space-y-4">
+          <p className="text-sm text-gray-500">
+            Cria uma nova aba de mural. As roupas com essa categoria aparecem aqui.
+          </p>
+          <input
+            autoFocus
+            value={newCat}
+            onChange={(e) => setNewCat(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && createCategory()}
+            className={inputCls}
+            placeholder="Ex: Inverno, Praia, Trabalho..."
+          />
+          <button
+            type="button"
+            onClick={createCategory}
+            className="w-full rounded bg-gray-900 py-3 font-black tracking-widest text-white uppercase"
+          >
+            Criar
+          </button>
+        </div>
+      </Modal>
+
+      {/* ── MODAL: configurar (excluir) categorias ── */}
+      <Modal isOpen={configOpen} onClose={() => setConfigOpen(false)} title="Configurar Categorias">
+        <div className="space-y-3">
+          {customCats.length === 0 ? (
+            <p className="text-sm text-gray-400 italic">
+              Nenhuma categoria personalizada. Use o + para criar.
+            </p>
+          ) : (
+            customCats.map((cat) => (
+              <div
+                key={cat}
+                className="flex items-center justify-between rounded border border-gray-100 bg-gray-50 px-4 py-3"
+              >
+                <span className="font-medium text-gray-800">{cat}</span>
+                <button
+                  type="button"
+                  onClick={() => removeCategory(cat)}
+                  aria-label={`Excluir ${cat}`}
+                  className="flex items-center gap-1 rounded px-2 py-1 text-xs font-bold text-red-500 transition-colors hover:bg-red-50"
+                >
+                  <X className="h-4 w-4" />
+                  Excluir
+                </button>
+              </div>
+            ))
+          )}
+          <p className="pt-1 text-xs text-gray-400">
+            Excluir a aba não apaga as roupas — elas só deixam de ter essa categoria como mural.
+          </p>
+        </div>
       </Modal>
     </div>
   );

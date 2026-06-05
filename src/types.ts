@@ -31,6 +31,8 @@ export interface Loja extends BaseItem {
   instagram?: string; // handle (ex: lojax) ou URL completa
   site?: string;
   ecommerce?: string;
+  // Logo enviada pelo usuário (URL do Storage)
+  logo?: string;
   // Origem do dado
   fonte?: string;
 }
@@ -95,4 +97,9 @@ export type AppData = {
   roupas: Roupa[];
   postura: PosturaItem[];
   musculos: MusculoItem[];
+  // Categorias (abas) personalizadas criadas pelo usuário
+  roupaCategorias?: string[];
+  produtoCategorias?: string[];
+  // Biblioteca de logos de loja reutilizáveis (chave = nome normalizado → URL)
+  lojaLogos?: Record<string, string>;
 };

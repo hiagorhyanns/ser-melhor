@@ -7,7 +7,7 @@ import { cn } from '../lib/utils';
 // ─────────────────────────────────────────────────────────────
 
 const FALLBACK_IMG =
-  'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80';
+  'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?auto=format&fit=crop&w=600&q=80';
 
 const onImgError = (e: React.SyntheticEvent<HTMLImageElement>) => {
   e.currentTarget.src = FALLBACK_IMG;
@@ -60,7 +60,7 @@ const ESTILOS = [
     subtitulo: 'English Cut / Bespoke',
     origem: '🇬🇧 Reino Unido',
     imagem:
-      'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?auto=format&fit=crop&w=600&q=80',
     descricao:
       'Ombros estruturados e retos, cintura bem suprimida, cortes duplos nas costas. Transmite autoridade e poder. A alfaiataria de Savile Row em Londres é a referência máxima.',
     caracteristicas: [
@@ -80,7 +80,7 @@ const ESTILOS = [
     subtitulo: 'Stile Napoletano — Nápoles',
     origem: '🇮🇹 Itália (Nápoles)',
     imagem:
-      'https://images.unsplash.com/photo-1583394293215-01c0cb7d41b0?auto=format&fit=crop&w=600&q=80',
+      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80',
     descricao:
       'A joia da alfaiataria artesanal. Construído sem entretela rígida (unstructured), a manga tem franzido característico — manica a camicia. Costurado à mão, leve como uma segunda pele.',
     caracteristicas: [
@@ -471,11 +471,11 @@ const FIT_REFS = [
     legenda: 'Regular Fit — ombro no lugar, corpo sem aperto',
   },
   {
-    img: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?auto=format&fit=crop&w=400&q=80',
+    img: 'https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?auto=format&fit=crop&w=400&q=80',
     legenda: 'Slim Fit — ajustado, moderno, calça estreita',
   },
   {
-    img: 'https://images.unsplash.com/photo-1583394293215-01c0cb7d41b0?auto=format&fit=crop&w=400&q=80',
+    img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
     legenda: 'Formal — lapela pico, terno completo de evento',
   },
 ];
