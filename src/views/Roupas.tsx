@@ -54,6 +54,18 @@ export function Roupas() {
 
   const [viewItem, setViewItem] = useState<Roupa | null>(null);
   const [zoomImg, setZoomImg] = useState<string | null>(null);
+  const [zoomed, setZoomed] = useState(false);
+  const [origin, setOrigin] = useState('center');
+
+  const openZoom = (src: string) => {
+    setZoomed(false);
+    setOrigin('center');
+    setZoomImg(src);
+  };
+  const closeZoom = () => {
+    setZoomImg(null);
+    setZoomed(false);
+  };
 
   const [addCatOpen, setAddCatOpen] = useState(false);
   const [configOpen, setConfigOpen] = useState(false);
@@ -265,7 +277,7 @@ export function Roupas() {
                   />
                   <button
                     type="button"
-                    onClick={() => setZoomImg(viewItem.foto!)}
+                    onClick={() => openZoom(viewItem.foto!)}
                     aria-label="Ampliar imagem"
                     title="Ampliar"
                     className="absolute top-2 right-2 flex h-9 w-9 items-center justify-center rounded-full bg-white/85 text-[#0C2E2D] shadow backdrop-blur transition-colors hover:bg-white"
@@ -338,20 +350,60 @@ export function Roupas() {
       {/* ── ZOOM: imagem ampliada (95vh) ── */}
       {zoomImg && (
         <div
-          className="fixed inset-0 z-[110] flex items-center justify-center bg-[#0C2E2D]/80 p-2"
-          onClick={() => setZoomImg(null)}
+          className="fixed inset-0 z-[110] flex items-center justify-center bg-white p-2"
+          onClick={closeZoom}
         >
-          <img
-            src={zoomImg}
-            alt="Imagem ampliada"
-            className="max-h-[95vh] max-w-full object-contain"
+          <div
+            className="relative flex max-h-[95vh] max-w-full items-center justify-center overflow-hidden"
             onClick={(e) => e.stopPropagation()}
-          />
+            onMouseMove={(e) => {
+              if (!zoomed) return;
+              const r = e.currentTarget.getBoundingClientRect();
+              const x = ((e.clientX - r.left) / r.width) * 100;
+              const y = ((e.clientY - r.top) / r.height) * 100;
+              setOrigin(`${x}% ${y}%`);
+            }}
+            onMouseLeave={() => setOrigin('center')}
+          >
+            <img
+              src={zoomImg}
+              alt="Imagem ampliada"
+              className="max-h-[95vh] max-w-full object-contain transition-transform duration-150"
+              style={{
+                transform: zoomed ? 'scale(3)' : 'scale(1)',
+                transformOrigin: origin,
+                cursor: zoomed ? 'zoom-out' : 'zoom-in',
+              }}
+              onClick={() => setZoomed((z) => !z)}
+            />
+          </div>
+
+          {/* Toggle zoom 3x (canto inferior direito) */}
           <button
             type="button"
-            onClick={() => setZoomImg(null)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setZoomed((z) => !z);
+            }}
+            aria-label="Zoom 3x"
+            title="Zoom 3x — passe o mouse para ver detalhes"
+            className={cn(
+              'absolute right-4 bottom-4 flex h-10 items-center gap-1.5 rounded-full px-4 text-sm font-bold shadow transition-colors',
+              zoomed
+                ? 'bg-[#0C2E2D] text-white'
+                : 'border border-gray-200 bg-white text-[#0C2E2D] hover:bg-gray-50',
+            )}
+          >
+            <ZoomIn className="h-5 w-5" />
+            3x
+          </button>
+
+          {/* Fechar: círculo verde, X branco */}
+          <button
+            type="button"
+            onClick={closeZoom}
             aria-label="Fechar"
-            className="absolute top-4 right-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-[#0C2E2D] shadow transition-colors hover:bg-white"
+            className="absolute top-4 right-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#0C2E2D] text-white shadow transition-colors hover:bg-[#103E3C]"
           >
             <X className="h-5 w-5" />
           </button>
