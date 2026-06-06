@@ -77,19 +77,19 @@ export function Card({
     <motion.div
       layout
       className={cn(
-        'rounded border border-gray-100 bg-white p-6 transition-all duration-300',
+        'rounded border border-gray-100 bg-white p-4 transition-all duration-300',
         completed ? 'scale-[0.98] border-transparent bg-gray-50 opacity-80' : 'hover:shadow-md',
       )}
     >
       {/* Linha de topo: conteúdo (cidade/status) + ações */}
       {topBar && (
-        <div className="mb-4 flex items-center justify-between gap-2 border-b border-gray-50 pb-3">
+        <div className="mb-3 flex items-center justify-between gap-2 border-b border-gray-50 pb-2">
           <div className="flex min-w-0 items-center gap-2">{topBar}</div>
           <div className="flex shrink-0 items-center gap-1">{actions}</div>
         </div>
       )}
 
-      <div className="mb-4 flex items-start justify-between">
+      <div className="mb-3 flex items-start justify-between">
         <div className="flex gap-4">
           {iconImage ? (
             <div className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded border border-gray-100 bg-white">
@@ -135,10 +135,10 @@ export function Card({
         {!topBar && <div className="flex items-center gap-2">{actions}</div>}
       </div>
 
-      <div className="space-y-4">{children}</div>
+      <div className="space-y-3">{children}</div>
 
       {footer && (
-        <div className="mt-6 flex items-center justify-between border-t border-gray-50 pt-6 text-xs font-bold tracking-wider text-gray-400 uppercase">
+        <div className="mt-4 flex items-center justify-between border-t border-gray-50 pt-4 text-xs font-bold tracking-wider text-gray-400 uppercase">
           {footer}
         </div>
       )}

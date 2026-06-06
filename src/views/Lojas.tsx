@@ -365,7 +365,7 @@ export function Lojas() {
       <SortableGrid
         ids={boardLojas.map((i) => i.id)}
         onReorder={(from, to) => reorderItems('lojas', from, to)}
-        className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+        className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
         disabled={hasActiveFilters || !!debouncedSearch || activeTab !== 'lojas'}
       >
         {boardLojas.map((item) => (
