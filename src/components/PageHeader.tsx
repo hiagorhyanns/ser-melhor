@@ -157,22 +157,26 @@ export function Modal({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               className={cn(
-                'pointer-events-auto max-h-[90vh] w-full overflow-y-auto rounded bg-white p-8 text-[#0C2E2D] shadow-2xl',
+                'pointer-events-auto relative max-h-[90vh] w-full overflow-y-auto rounded bg-white p-8 text-[#0C2E2D] shadow-2xl',
                 maxWidth,
               )}
             >
               {!hideHeader && (
-                <div className="mb-8 flex items-center justify-between">
-                  <h2 className="text-2xl font-black tracking-tight uppercase italic">{title}</h2>
+                <>
+                  {title && (
+                    <h2 className="mb-8 pr-10 text-2xl font-black tracking-tight uppercase italic">
+                      {title}
+                    </h2>
+                  )}
                   <button
                     type="button"
                     onClick={onClose}
                     aria-label="Fechar"
-                    className="rounded-full p-2 transition-colors hover:bg-gray-50"
+                    className="absolute top-4 right-4 rounded-full p-2 text-gray-400 transition-colors hover:bg-gray-50 hover:text-[#0C2E2D]"
                   >
-                    <X />
+                    <X className="h-5 w-5" />
                   </button>
-                </div>
+                </>
               )}
               {children}
             </motion.div>

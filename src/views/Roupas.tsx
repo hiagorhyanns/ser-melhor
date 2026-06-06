@@ -425,10 +425,6 @@ export function Roupas() {
         <form onSubmit={handleSubmit} className="space-y-5">
           <ImageUpload value={foto} onChange={setFoto} label="Imagem (referência)" />
 
-          <p className="text-xs text-gray-400">
-            Só a imagem é necessária. Os campos abaixo são opcionais — preencha se quiser.
-          </p>
-
           <div className="space-y-2">
             <label htmlFor="roupa-nome" className={labelCls}>
               Nome / Descrição
