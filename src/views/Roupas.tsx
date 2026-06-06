@@ -54,18 +54,19 @@ export function Roupas() {
 
   const [viewItem, setViewItem] = useState<Roupa | null>(null);
   const [zoomImg, setZoomImg] = useState<string | null>(null);
-  const [zoomed, setZoomed] = useState(false);
+  const [zoom, setZoom] = useState(1); // 1 | 3 | 6
   const [origin, setOrigin] = useState('center');
 
   const openZoom = (src: string) => {
-    setZoomed(false);
+    setZoom(1);
     setOrigin('center');
     setZoomImg(src);
   };
   const closeZoom = () => {
     setZoomImg(null);
-    setZoomed(false);
+    setZoom(1);
   };
+  const toggleZoom = (level: number) => setZoom((z) => (z === level ? 1 : level));
 
   const [addCatOpen, setAddCatOpen] = useState(false);
   const [configOpen, setConfigOpen] = useState(false);
@@ -354,10 +355,10 @@ export function Roupas() {
           onClick={closeZoom}
         >
           <div
-            className="relative flex max-h-[95vh] max-w-full items-center justify-center overflow-hidden"
+            className="relative h-[95vh] w-full overflow-hidden"
             onClick={(e) => e.stopPropagation()}
             onMouseMove={(e) => {
-              if (!zoomed) return;
+              if (zoom <= 1) return;
               const r = e.currentTarget.getBoundingClientRect();
               const x = ((e.clientX - r.left) / r.width) * 100;
               const y = ((e.clientY - r.top) / r.height) * 100;
@@ -368,35 +369,40 @@ export function Roupas() {
             <img
               src={zoomImg}
               alt="Imagem ampliada"
-              className="max-h-[95vh] max-w-full object-contain transition-transform duration-150"
+              className="h-full w-full object-contain transition-transform duration-150"
               style={{
-                transform: zoomed ? 'scale(3)' : 'scale(1)',
+                transform: `scale(${zoom})`,
                 transformOrigin: origin,
-                cursor: zoomed ? 'zoom-out' : 'zoom-in',
+                cursor: zoom > 1 ? 'zoom-out' : 'zoom-in',
               }}
-              onClick={() => setZoomed((z) => !z)}
+              onClick={() => toggleZoom(3)}
             />
           </div>
 
-          {/* Toggle zoom 3x (canto inferior direito) */}
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setZoomed((z) => !z);
-            }}
-            aria-label="Zoom 3x"
-            title="Zoom 3x — passe o mouse para ver detalhes"
-            className={cn(
-              'absolute right-4 bottom-4 flex h-10 items-center gap-1.5 rounded-full px-4 text-sm font-bold shadow transition-colors',
-              zoomed
-                ? 'bg-[#0C2E2D] text-white'
-                : 'border border-gray-200 bg-white text-[#0C2E2D] hover:bg-gray-50',
-            )}
-          >
-            <ZoomIn className="h-5 w-5" />
-            3x
-          </button>
+          {/* Toggles zoom 3x / 6x (canto inferior direito) */}
+          <div className="absolute right-4 bottom-4 flex items-center gap-2">
+            {[3, 6].map((lvl) => (
+              <button
+                key={lvl}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleZoom(lvl);
+                }}
+                aria-label={`Zoom ${lvl}x`}
+                title={`Zoom ${lvl}x — passe o mouse para ver detalhes`}
+                className={cn(
+                  'flex h-10 items-center gap-1.5 rounded-full px-4 text-sm font-bold shadow transition-colors',
+                  zoom === lvl
+                    ? 'bg-[#0C2E2D] text-white'
+                    : 'border border-gray-200 bg-white text-[#0C2E2D] hover:bg-gray-50',
+                )}
+              >
+                <ZoomIn className="h-5 w-5" />
+                {lvl}x
+              </button>
+            ))}
+          </div>
 
           {/* Fechar: círculo verde, X branco */}
           <button
