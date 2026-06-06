@@ -65,7 +65,7 @@ const INITIAL_DATA: AppData = {
       createdAt: Date.now(),
     },
   ],
-  roupaCategorias: [],
+  roupaCategorias: ['Básicos', 'Paleta', 'Formalidade', 'Ajustar'],
   produtoCategorias: [],
   lojaCategorias: [],
   lojaLogos: {},

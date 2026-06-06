@@ -124,13 +124,22 @@ export function PageHeader({
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  title: string;
+  title?: string;
   children: React.ReactNode;
   /** Classe de largura máxima (ex: "max-w-3xl"). Padrão "max-w-lg". */
   maxWidth?: string;
+  /** Esconde a barra de título/X (a view controla seu próprio cabeçalho). */
+  hideHeader?: boolean;
 }
 
-export function Modal({ isOpen, onClose, title, children, maxWidth = 'max-w-lg' }: ModalProps) {
+export function Modal({
+  isOpen,
+  onClose,
+  title,
+  children,
+  maxWidth = 'max-w-lg',
+  hideHeader = false,
+}: ModalProps) {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -152,17 +161,19 @@ export function Modal({ isOpen, onClose, title, children, maxWidth = 'max-w-lg' 
                 maxWidth,
               )}
             >
-              <div className="mb-8 flex items-center justify-between">
-                <h2 className="text-2xl font-black tracking-tight uppercase italic">{title}</h2>
-                <button
-                  type="button"
-                  onClick={onClose}
-                  aria-label="Fechar"
-                  className="rounded-full p-2 transition-colors hover:bg-gray-50"
-                >
-                  <X />
-                </button>
-              </div>
+              {!hideHeader && (
+                <div className="mb-8 flex items-center justify-between">
+                  <h2 className="text-2xl font-black tracking-tight uppercase italic">{title}</h2>
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    aria-label="Fechar"
+                    className="rounded-full p-2 transition-colors hover:bg-gray-50"
+                  >
+                    <X />
+                  </button>
+                </div>
+              )}
               {children}
             </motion.div>
           </div>

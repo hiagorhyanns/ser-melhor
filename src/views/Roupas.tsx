@@ -2,19 +2,12 @@ import React, { useState } from 'react';
 import { useAppData } from '../hooks/useAppData';
 import { Modal } from '../components/PageHeader';
 import { ImageUpload } from '../components/ImageUpload';
-import { Plus, Image as ImageIcon, Pencil, Trash2, Settings, X } from 'lucide-react';
+import { Plus, Image as ImageIcon, Pencil, Trash2, Settings, X, ZoomIn } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { Roupa } from '../types';
 
-// Abas-mural fixas (Referências = mural geral). id = categoria usada no filtro.
-const BUILTIN_TABS = [
-  { id: 'referencias', label: 'Referências' },
-  { id: 'Básicos', label: 'Básicos' },
-  { id: 'Paleta', label: 'Paleta' },
-  { id: 'Formalidade', label: 'Formalidade' },
-  { id: 'Fit', label: 'Fit' },
-];
-const BUILTIN_CAT_LABELS = BUILTIN_TABS.filter((t) => t.id !== 'referencias').map((t) => t.label);
+// Categorias padrão (criadas para instalações novas; editáveis/excluíveis).
+const DEFAULT_CATS = ['Básicos', 'Paleta', 'Formalidade', 'Ajustar'];
 
 const CATEGORIA_BASE = [
   'Look completo',
@@ -60,6 +53,7 @@ export function Roupas() {
   const [presetCategoria, setPresetCategoria] = useState('');
 
   const [viewItem, setViewItem] = useState<Roupa | null>(null);
+  const [zoomImg, setZoomImg] = useState<string | null>(null);
 
   const [addCatOpen, setAddCatOpen] = useState(false);
   const [configOpen, setConfigOpen] = useState(false);
@@ -126,7 +120,7 @@ export function Roupas() {
   const createCategory = () => {
     const name = newCat.trim();
     if (!name) return;
-    if (!customCats.includes(name) && !BUILTIN_TABS.some((t) => t.label === name)) {
+    if (!customCats.includes(name)) {
       patchRoot({ roupaCategorias: [...customCats, name] });
     }
     setActiveTab(name);
@@ -176,7 +170,7 @@ export function Roupas() {
       {/* Tab nav + ações (criar / configurar categorias) */}
       <div className="mb-6 flex items-center justify-between border-b border-zinc-200">
         <div className="flex gap-0 overflow-x-auto">
-          {BUILTIN_TABS.map((t) => tabBtn(t.id, t.label))}
+          {tabBtn('referencias', 'Todos')}
           {customCats.map((c) => tabBtn(c, c))}
         </div>
         <div className="flex shrink-0 items-center gap-1 pl-2">
@@ -257,18 +251,28 @@ export function Roupas() {
         </div>
       )}
 
-      {/* ── POPUP: imagem + informações ── */}
-      <Modal
-        isOpen={!!viewItem}
-        onClose={() => setViewItem(null)}
-        title={viewItem?.nome || 'Referência'}
-        maxWidth="max-w-3xl"
-      >
+      {/* ── POPUP: imagem + informações (sem título; ações no topo) ── */}
+      <Modal isOpen={!!viewItem} onClose={() => setViewItem(null)} maxWidth="max-w-4xl" hideHeader>
         {viewItem && (
           <div className="grid gap-6 md:grid-cols-2">
-            <div className="overflow-hidden rounded bg-gray-100">
+            <div className="relative overflow-hidden rounded bg-gray-100">
               {viewItem.foto ? (
-                <img src={viewItem.foto} alt={viewItem.nome || 'Referência'} className="w-full object-cover" />
+                <>
+                  <img
+                    src={viewItem.foto}
+                    alt={viewItem.nome || 'Referência'}
+                    className="w-full object-cover"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setZoomImg(viewItem.foto!)}
+                    aria-label="Ampliar imagem"
+                    title="Ampliar"
+                    className="absolute top-2 right-2 flex h-9 w-9 items-center justify-center rounded-full bg-white/85 text-[#0C2E2D] shadow backdrop-blur transition-colors hover:bg-white"
+                  >
+                    <ZoomIn className="h-5 w-5" />
+                  </button>
+                </>
               ) : (
                 <div className="flex aspect-[3/4] items-center justify-center text-gray-300">
                   <ImageIcon className="h-12 w-12" />
@@ -277,6 +281,37 @@ export function Roupas() {
             </div>
 
             <div className="flex flex-col gap-4">
+              {/* Ações no topo, ao lado da imagem */}
+              <div className="flex items-center justify-end gap-1">
+                <button
+                  type="button"
+                  onClick={() => openEdit(viewItem)}
+                  aria-label="Editar"
+                  title="Editar"
+                  className="rounded-full p-2 text-gray-400 transition-colors hover:bg-gray-50 hover:text-[#0C2E2D]"
+                >
+                  <Pencil className="h-5 w-5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDelete(viewItem.id)}
+                  aria-label="Excluir"
+                  title="Excluir"
+                  className="rounded-full p-2 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500"
+                >
+                  <Trash2 className="h-5 w-5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewItem(null)}
+                  aria-label="Fechar"
+                  title="Fechar"
+                  className="rounded-full p-2 text-gray-400 transition-colors hover:bg-gray-50 hover:text-[#0C2E2D]"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
               {viewItem.status && (
                 <span
                   className={cn(
@@ -295,29 +330,33 @@ export function Roupas() {
               {!viewItem.categoria && !viewItem.cor && !viewItem.ocasiao && !viewItem.combinacoes && (
                 <p className="text-sm text-gray-400 italic">Sem informações adicionais.</p>
               )}
-
-              <div className="mt-auto flex gap-2 pt-2">
-                <button
-                  type="button"
-                  onClick={() => openEdit(viewItem)}
-                  className="flex flex-1 items-center justify-center gap-2 rounded bg-[#0C2E2D] py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#103E3C]"
-                >
-                  <Pencil className="h-4 w-4" />
-                  Editar
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleDelete(viewItem.id)}
-                  aria-label="Remover"
-                  className="flex items-center justify-center rounded border border-gray-200 px-3 text-gray-400 transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-500"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
-              </div>
             </div>
           </div>
         )}
       </Modal>
+
+      {/* ── ZOOM: imagem ampliada (95vh) ── */}
+      {zoomImg && (
+        <div
+          className="fixed inset-0 z-[110] flex items-center justify-center bg-[#0C2E2D]/80 p-2"
+          onClick={() => setZoomImg(null)}
+        >
+          <img
+            src={zoomImg}
+            alt="Imagem ampliada"
+            className="max-h-[95vh] max-w-full object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
+          <button
+            type="button"
+            onClick={() => setZoomImg(null)}
+            aria-label="Fechar"
+            className="absolute top-4 right-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-[#0C2E2D] shadow transition-colors hover:bg-white"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+      )}
 
       {/* ── FORM: adicionar / editar ── */}
       <Modal
@@ -357,7 +396,7 @@ export function Roupas() {
                 className={inputCls}
               >
                 <option value="">—</option>
-                {[...BUILTIN_CAT_LABELS, ...CATEGORIA_BASE, ...customCats]
+                {[...customCats, ...CATEGORIA_BASE]
                   .filter((c, i, a) => a.indexOf(c) === i)
                   .map((c) => (
                     <option key={c}>{c}</option>
