@@ -127,7 +127,7 @@ export function Cabelo() {
           {GUIDE_CABELO.map((card) => (
             <div key={card.titulo} className="w-56 shrink-0 rounded border border-zinc-100 bg-white p-4 shadow-sm">
               <p className="mb-1 text-[9px] font-bold tracking-widest text-zinc-400 uppercase">{card.label}</p>
-              <p className="mb-1.5 text-sm font-bold text-zinc-900">{card.titulo}</p>
+              <p className="mb-1.5 text-sm font-bold text-[#0C2E2D]">{card.titulo}</p>
               <p className="text-xs leading-relaxed text-zinc-500">{card.texto}</p>
             </div>
           ))}
@@ -201,7 +201,7 @@ export function Cabelo() {
               name="tipoCorte"
               required
               defaultValue={editingItem?.tipoCorte}
-              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
+              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-[#0C2E2D] transition-all outline-none focus:border-[#0C2E2D] focus:bg-white"
               placeholder="Ex: Fade, Side Part, Buzz Cut..."
             />
           </div>
@@ -216,7 +216,7 @@ export function Cabelo() {
               id="cabelo-referencia"
               name="referencia"
               defaultValue={editingItem?.referencia}
-              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
+              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-[#0C2E2D] transition-all outline-none focus:border-[#0C2E2D] focus:bg-white"
               placeholder="Link do Pinterest ou nome da referência"
             />
           </div>
@@ -233,7 +233,7 @@ export function Cabelo() {
                 name="frequencia"
                 required
                 defaultValue={editingItem?.frequencia}
-                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
+                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-[#0C2E2D] transition-all outline-none focus:border-[#0C2E2D] focus:bg-white"
                 placeholder="Ex: Mensal"
               />
             </div>
@@ -248,7 +248,7 @@ export function Cabelo() {
                 id="cabelo-barbeiro"
                 name="barbeiro"
                 defaultValue={editingItem?.barbeiro}
-                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
+                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-[#0C2E2D] transition-all outline-none focus:border-[#0C2E2D] focus:bg-white"
                 placeholder="Nome ou Local"
               />
             </div>
@@ -264,12 +264,12 @@ export function Cabelo() {
               id="cabelo-observacoes"
               name="observacoes"
               defaultValue={editingItem?.observacoes}
-              className="min-h-[80px] w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
+              className="min-h-[80px] w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-[#0C2E2D] transition-all outline-none focus:border-[#0C2E2D] focus:bg-white"
               placeholder="Shampoo específico, pomada mate..."
             />
           </div>
           <ImageUpload value={foto} onChange={setFoto} label="Foto de Referência" />
-          <button className="w-full rounded bg-gray-900 py-4 font-black tracking-widest text-white uppercase">
+          <button className="w-full rounded bg-[#0C2E2D] py-4 font-black tracking-widest text-white uppercase">
             Salvar
           </button>
         </form>

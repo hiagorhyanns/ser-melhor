@@ -59,7 +59,7 @@ const STATUS_BADGE: Record<Produto['status'], string> = {
 };
 
 const inputCls =
-  'w-full rounded border border-transparent bg-gray-50 p-3 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white';
+  'w-full rounded border border-transparent bg-gray-50 p-3 font-medium text-[#0C2E2D] transition-all outline-none focus:border-[#0C2E2D] focus:bg-white';
 const labelCls = 'text-xs font-bold tracking-widest text-gray-400 uppercase';
 
 function InfoRow({ label, value }: { label: string; value?: string }) {
@@ -67,7 +67,7 @@ function InfoRow({ label, value }: { label: string; value?: string }) {
   return (
     <div>
       <p className={labelCls}>{label}</p>
-      <p className="mt-0.5 text-sm font-medium text-gray-800">{value}</p>
+      <p className="mt-0.5 text-sm font-medium text-[#103E3C]">{value}</p>
     </div>
   );
 }
@@ -226,7 +226,7 @@ export function Produtos() {
               className={cn(
                 'whitespace-nowrap border-b-2 px-4 py-2.5 text-sm font-medium transition-all',
                 activeTab === tab.id
-                  ? 'border-zinc-900 text-zinc-900'
+                  ? 'border-[#0C2E2D] text-[#0C2E2D]'
                   : 'border-transparent text-zinc-400 hover:text-zinc-700',
               )}
             >
@@ -240,7 +240,7 @@ export function Produtos() {
             onClick={() => setAddCatOpen(true)}
             aria-label="Criar categoria"
             title="Criar nova categoria"
-            className="flex h-8 w-8 items-center justify-center rounded border border-zinc-200 text-zinc-500 transition-colors hover:border-zinc-900 hover:text-zinc-900"
+            className="flex h-8 w-8 items-center justify-center rounded border border-zinc-200 text-zinc-500 transition-colors hover:border-[#0C2E2D] hover:text-[#0C2E2D]"
           >
             <Plus className="h-4 w-4" />
           </button>
@@ -304,7 +304,7 @@ export function Produtos() {
       {/* ── TABS DE TEXTO ── */}
       {!isBoard && GUIDE[activeTab] && (
         <div className="mx-auto max-w-2xl">
-          <h2 className="mb-4 text-2xl font-black tracking-tight text-gray-900 uppercase italic">
+          <h2 className="mb-4 text-2xl font-black tracking-tight text-[#0C2E2D] uppercase italic">
             {GUIDE[activeTab].titulo}
           </h2>
           <div className="space-y-4">
@@ -349,7 +349,7 @@ export function Produtos() {
                   </span>
                 )}
                 {!!viewItem.nota && (
-                  <span className="flex items-center gap-1 text-sm font-bold text-gray-900">
+                  <span className="flex items-center gap-1 text-sm font-bold text-[#0C2E2D]">
                     <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
                     {viewItem.nota}/10
                   </span>
@@ -367,7 +367,7 @@ export function Produtos() {
                 <button
                   type="button"
                   onClick={() => openEdit(viewItem)}
-                  className="flex flex-1 items-center justify-center gap-2 rounded bg-gray-900 py-2.5 text-sm font-bold text-white transition-colors hover:bg-gray-800"
+                  className="flex flex-1 items-center justify-center gap-2 rounded bg-[#0C2E2D] py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#103E3C]"
                 >
                   <Pencil className="h-4 w-4" />
                   Editar
@@ -484,7 +484,7 @@ export function Produtos() {
             </select>
           </div>
 
-          <button className="w-full rounded bg-gray-900 py-4 font-black tracking-widest text-white uppercase">
+          <button className="w-full rounded bg-[#0C2E2D] py-4 font-black tracking-widest text-white uppercase">
             Salvar
           </button>
         </form>
@@ -507,7 +507,7 @@ export function Produtos() {
           <button
             type="button"
             onClick={createCategory}
-            className="w-full rounded bg-gray-900 py-3 font-black tracking-widest text-white uppercase"
+            className="w-full rounded bg-[#0C2E2D] py-3 font-black tracking-widest text-white uppercase"
           >
             Criar
           </button>
@@ -527,7 +527,7 @@ export function Produtos() {
                 key={cat}
                 className="flex items-center justify-between rounded border border-gray-100 bg-gray-50 px-4 py-3"
               >
-                <span className="font-medium text-gray-800">{cat}</span>
+                <span className="font-medium text-[#103E3C]">{cat}</span>
                 <button
                   type="button"
                   onClick={() => removeCategory(cat)}

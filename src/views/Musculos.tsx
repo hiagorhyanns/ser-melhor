@@ -119,7 +119,7 @@ export function Musculos() {
           {GUIDE_MUSCULOS.map((card) => (
             <div key={card.titulo} className="w-56 shrink-0 rounded border border-zinc-100 bg-white p-4 shadow-sm">
               <p className="mb-1 text-[9px] font-bold tracking-widest text-zinc-400 uppercase">{card.label}</p>
-              <p className="mb-1.5 text-sm font-bold text-zinc-900">{card.titulo}</p>
+              <p className="mb-1.5 text-sm font-bold text-[#0C2E2D]">{card.titulo}</p>
               <p className="text-xs leading-relaxed text-zinc-500">{card.texto}</p>
             </div>
           ))}
@@ -152,7 +152,7 @@ export function Musculos() {
                 <h4 className="mb-1 text-[10px] font-bold tracking-widest text-gray-400 uppercase">
                   Exercício Recomendado
                 </h4>
-                <p className="text-sm font-bold text-gray-900">
+                <p className="text-sm font-bold text-[#0C2E2D]">
                   {item.exercicio}
                 </p>
               </div>
@@ -182,7 +182,7 @@ export function Musculos() {
                 name="musculo"
                 required
                 defaultValue={editingItem?.musculo}
-                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
+                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-[#0C2E2D] transition-all outline-none focus:border-[#0C2E2D] focus:bg-white"
                 placeholder="Ex: Peito, Costas..."
               />
             </div>
@@ -198,7 +198,7 @@ export function Musculos() {
                 name="objetivo"
                 required
                 defaultValue={editingItem?.objetivo}
-                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
+                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-[#0C2E2D] transition-all outline-none focus:border-[#0C2E2D] focus:bg-white"
                 placeholder="Ex: Definição, Volume..."
               />
             </div>
@@ -216,7 +216,7 @@ export function Musculos() {
                 name="exercicio"
                 required
                 defaultValue={editingItem?.exercicio}
-                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
+                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-[#0C2E2D] transition-all outline-none focus:border-[#0C2E2D] focus:bg-white"
               />
             </div>
             <div className="space-y-2">
@@ -231,7 +231,7 @@ export function Musculos() {
                 name="frequenciaSemanal"
                 required
                 defaultValue={editingItem?.frequenciaSemanal}
-                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
+                className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-[#0C2E2D] transition-all outline-none focus:border-[#0C2E2D] focus:bg-white"
                 placeholder="Ex: 2x"
               />
             </div>
@@ -247,10 +247,10 @@ export function Musculos() {
               id="musculo-observacao"
               name="observacao"
               defaultValue={editingItem?.observacao}
-              className="min-h-[80px] w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
+              className="min-h-[80px] w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-[#0C2E2D] transition-all outline-none focus:border-[#0C2E2D] focus:bg-white"
             />
           </div>
-          <button className="w-full rounded bg-gray-900 py-4 font-black tracking-widest text-white uppercase">
+          <button className="w-full rounded bg-[#0C2E2D] py-4 font-black tracking-widest text-white uppercase">
             Salvar
           </button>
         </form>

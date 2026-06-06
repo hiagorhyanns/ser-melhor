@@ -338,7 +338,7 @@ const LOJAS = [
       'Boa gama de tamanhos e cortes',
     ],
     avaliacao: 5,
-    cor: 'bg-zinc-900',
+    cor: 'bg-[#0C2E2D]',
   },
   {
     nome: 'Aramis',
@@ -355,7 +355,7 @@ const LOJAS = [
       'Melhor custo-benefício premium nacional',
     ],
     avaliacao: 5,
-    cor: 'bg-zinc-800',
+    cor: 'bg-[#103E3C]',
   },
   {
     nome: 'Zara Man',
@@ -533,7 +533,7 @@ export function Ternos() {
     <div>
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold tracking-tight text-zinc-900">Guia de Ternos</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-[#0C2E2D]">Guia de Ternos</h1>
         <p className="mt-1 text-sm text-zinc-500">
           Tudo que você precisa saber antes de entrar em uma loja.
         </p>
@@ -548,7 +548,7 @@ export function Ternos() {
             className={cn(
               'whitespace-nowrap border-b-2 px-4 py-2.5 text-sm font-medium transition-all',
               activeTab === tab.id
-                ? 'border-zinc-900 text-zinc-900'
+                ? 'border-[#0C2E2D] text-[#0C2E2D]'
                 : 'border-transparent text-zinc-400 hover:text-zinc-700',
             )}
           >
@@ -570,7 +570,7 @@ export function Ternos() {
                   type="button"
                   onClick={() => openEditImg(estilo.id)}
                   title="Trocar imagem"
-                  className="absolute top-2 left-2 z-10 flex items-center gap-1 rounded bg-black/55 px-2.5 py-1.5 text-xs font-medium text-white backdrop-blur transition-colors hover:bg-black/75"
+                  className="absolute top-2 left-2 z-10 flex items-center gap-1 rounded bg-[#0C2E2D]/55 px-2.5 py-1.5 text-xs font-medium text-white backdrop-blur transition-colors hover:bg-[#0C2E2D]/75"
                 >
                   <Camera className="h-3.5 w-3.5" />
                   Trocar
@@ -585,7 +585,7 @@ export function Ternos() {
                   <p className="mb-0.5 text-[10px] font-bold tracking-widest text-zinc-400 uppercase">
                     {estilo.origem}
                   </p>
-                  <h2 className="text-xl font-bold text-zinc-900">{estilo.nome}</h2>
+                  <h2 className="text-xl font-bold text-[#0C2E2D]">{estilo.nome}</h2>
                   <p className="mb-3 text-sm text-zinc-500">{estilo.subtitulo}</p>
                   <p className="mb-4 text-sm leading-relaxed text-zinc-600">{estilo.descricao}</p>
 
@@ -657,7 +657,7 @@ export function Ternos() {
               >
                 <div className="mb-3 flex items-center gap-3">
                   <span className="text-2xl">{parte.emoji}</span>
-                  <h3 className="font-bold text-zinc-900">{parte.nome}</h3>
+                  <h3 className="font-bold text-[#0C2E2D]">{parte.nome}</h3>
                 </div>
                 <div className="mb-3 space-y-1.5">
                   {parte.tipos.map((tipo) => (
@@ -669,7 +669,7 @@ export function Ternos() {
                 </div>
                 <div className="rounded bg-zinc-50 px-3 py-2.5">
                   <p className="text-xs text-zinc-600">
-                    <span className="font-bold text-zinc-900">Dica: </span>
+                    <span className="font-bold text-[#0C2E2D]">Dica: </span>
                     {parte.dica}
                   </p>
                 </div>
@@ -733,7 +733,7 @@ export function Ternos() {
                   </div>
                   <div className="rounded bg-zinc-50 px-3 py-2.5">
                     <p className="text-xs text-zinc-600">
-                      <span className="font-bold text-zinc-900">Dica: </span>
+                      <span className="font-bold text-[#0C2E2D]">Dica: </span>
                       {tecido.dica}
                     </p>
                   </div>
@@ -780,7 +780,7 @@ export function Ternos() {
                       <p className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase">
                         Preço
                       </p>
-                      <p className="text-xs font-bold text-zinc-900">{loja.simbolo}</p>
+                      <p className="text-xs font-bold text-[#0C2E2D]">{loja.simbolo}</p>
                     </div>
                     <div className="col-span-2">
                       <p className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase">
@@ -815,7 +815,7 @@ export function Ternos() {
                     href={`https://${loja.site}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center gap-1.5 text-xs font-medium text-zinc-900 underline underline-offset-2"
+                    className="flex items-center gap-1.5 text-xs font-medium text-[#0C2E2D] underline underline-offset-2"
                   >
                     <Globe className="h-3.5 w-3.5" />
                     {loja.site}
@@ -841,7 +841,7 @@ export function Ternos() {
           <div className="grid gap-4 sm:grid-cols-2">
             {DICAS_RAPIDAS.map((dica) => (
               <div key={dica.titulo} className="rounded border border-zinc-200 bg-white p-5">
-                <h3 className="mb-2 font-bold text-zinc-900">{dica.titulo}</h3>
+                <h3 className="mb-2 font-bold text-[#0C2E2D]">{dica.titulo}</h3>
                 <p className="text-sm leading-relaxed text-zinc-600">{dica.texto}</p>
               </div>
             ))}
@@ -849,7 +849,7 @@ export function Ternos() {
 
           {/* Fit guide images */}
           <div>
-            <h2 className="mb-3 text-base font-bold text-zinc-900">Referências visuais de caimento</h2>
+            <h2 className="mb-3 text-base font-bold text-[#0C2E2D]">Referências visuais de caimento</h2>
             <div className="grid gap-4 sm:grid-cols-3">
               {FIT_REFS.map((ref) => (
                 <div key={ref.legenda} className="overflow-hidden rounded border border-zinc-200 bg-white">
@@ -867,7 +867,7 @@ export function Ternos() {
 
           {/* Checklist para o shopping */}
           <div className="rounded border border-zinc-200 bg-white p-5">
-            <h3 className="mb-4 font-bold text-zinc-900">✅ Checklist — O que perguntar na loja</h3>
+            <h3 className="mb-4 font-bold text-[#0C2E2D]">✅ Checklist — O que perguntar na loja</h3>
             <div className="space-y-2">
               {CHECKLIST_PERGUNTAS.map((item) => (
                 <div key={item} className="flex items-center gap-3">
@@ -893,7 +893,7 @@ export function Ternos() {
             <button
               type="button"
               onClick={saveImg}
-              className="flex-1 rounded bg-gray-900 py-3 font-black tracking-widest text-white uppercase"
+              className="flex-1 rounded bg-[#0C2E2D] py-3 font-black tracking-widest text-white uppercase"
             >
               Salvar
             </button>

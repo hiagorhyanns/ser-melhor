@@ -10,7 +10,7 @@ interface Props {
 }
 
 const INPUT_CLASS =
-  'flex-1 rounded border border-transparent bg-gray-50 px-4 py-3 text-sm font-medium text-gray-900 transition-all outline-none placeholder:text-gray-400 focus:border-gray-900 focus:bg-white';
+  'flex-1 rounded border border-transparent bg-gray-50 px-4 py-3 text-sm font-medium text-[#0C2E2D] transition-all outline-none placeholder:text-gray-400 focus:border-[#0C2E2D] focus:bg-white';
 
 /**
  * Reusable image upload component.
@@ -64,7 +64,7 @@ export function ImageUpload({ value, onChange, label = 'Foto / Referência' }: P
           <button
             type="button"
             onClick={() => onChange(undefined)}
-            className="absolute top-2 right-2 rounded-full bg-gray-900/60 p-1.5 text-white transition-colors hover:bg-gray-900"
+            className="absolute top-2 right-2 rounded-full bg-[#0C2E2D]/60 p-1.5 text-white transition-colors hover:bg-[#0C2E2D]"
           >
             <X className="h-4 w-4" />
           </button>

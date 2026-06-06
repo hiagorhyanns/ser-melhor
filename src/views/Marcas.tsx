@@ -130,7 +130,7 @@ export function Marcas() {
           {GUIDE_MARCAS.map((card) => (
             <div key={card.titulo} className="w-56 shrink-0 rounded border border-zinc-100 bg-white p-4 shadow-sm">
               <p className="mb-1 text-[9px] font-bold tracking-widest text-zinc-400 uppercase">{card.label}</p>
-              <p className="mb-1.5 text-sm font-bold text-zinc-900">{card.titulo}</p>
+              <p className="mb-1.5 text-sm font-bold text-[#0C2E2D]">{card.titulo}</p>
               <p className="text-xs leading-relaxed text-zinc-500">{card.texto}</p>
             </div>
           ))}
@@ -212,7 +212,7 @@ export function Marcas() {
               name="nome"
               required
               defaultValue={editingItem?.nome}
-              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
+              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-[#0C2E2D] transition-all outline-none focus:border-[#0C2E2D] focus:bg-white"
               placeholder="Ex: Levis, Armani, Channel..."
             />
           </div>
@@ -228,7 +228,7 @@ export function Marcas() {
               name="categoria"
               required
               defaultValue={editingItem?.categoria}
-              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
+              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-[#0C2E2D] transition-all outline-none focus:border-[#0C2E2D] focus:bg-white"
               placeholder="Ex: Roupas, Calçados, Perfumes..."
             />
           </div>
@@ -247,7 +247,7 @@ export function Marcas() {
               max="5"
               required
               defaultValue={editingItem?.nivelInteresse || 3}
-              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
+              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-[#0C2E2D] transition-all outline-none focus:border-[#0C2E2D] focus:bg-white"
             />
           </div>
           <div className="space-y-2">
@@ -261,7 +261,7 @@ export function Marcas() {
               id="marca-observacao"
               name="observacao"
               defaultValue={editingItem?.observacao}
-              className="min-h-[100px] w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
+              className="min-h-[100px] w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-[#0C2E2D] transition-all outline-none focus:border-[#0C2E2D] focus:bg-white"
               placeholder="Notas sobre qualidade, preço, caimento..."
             />
           </div>
@@ -271,13 +271,13 @@ export function Marcas() {
               type="checkbox"
               name="favorita"
               defaultChecked={editingItem?.favorita}
-              className="h-5 w-5 cursor-pointer rounded border-2 border-gray-200 transition-all checked:bg-gray-900"
+              className="h-5 w-5 cursor-pointer rounded border-2 border-gray-200 transition-all checked:bg-[#0C2E2D]"
             />
-            <span className="text-sm font-bold text-gray-600 group-hover:text-gray-900">
+            <span className="text-sm font-bold text-gray-600 group-hover:text-[#0C2E2D]">
               Marcar como favorita
             </span>
           </label>
-          <button className="w-full rounded bg-gray-900 py-4 font-black tracking-widest text-white uppercase shadow-xl shadow-gray-200 transition-all hover:bg-gray-800">
+          <button className="w-full rounded bg-[#0C2E2D] py-4 font-black tracking-widest text-white uppercase shadow-xl shadow-gray-200 transition-all hover:bg-[#103E3C]">
             Salvar
           </button>
         </form>

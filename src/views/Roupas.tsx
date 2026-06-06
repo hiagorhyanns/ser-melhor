@@ -35,7 +35,7 @@ const STATUS_BADGE: Record<Roupa['status'], string> = {
 };
 
 const inputCls =
-  'w-full rounded border border-transparent bg-gray-50 p-3 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white';
+  'w-full rounded border border-transparent bg-gray-50 p-3 font-medium text-[#0C2E2D] transition-all outline-none focus:border-[#0C2E2D] focus:bg-white';
 const labelCls = 'text-xs font-bold tracking-widest text-gray-400 uppercase';
 
 function InfoRow({ label, value }: { label: string; value?: string }) {
@@ -43,7 +43,7 @@ function InfoRow({ label, value }: { label: string; value?: string }) {
   return (
     <div>
       <p className={labelCls}>{label}</p>
-      <p className="mt-0.5 text-sm font-medium text-gray-800">{value}</p>
+      <p className="mt-0.5 text-sm font-medium text-[#103E3C]">{value}</p>
     </div>
   );
 }
@@ -163,7 +163,7 @@ export function Roupas() {
       className={cn(
         'whitespace-nowrap border-b-2 px-4 py-2.5 text-sm font-medium transition-all',
         activeTab === id
-          ? 'border-zinc-900 text-zinc-900'
+          ? 'border-[#0C2E2D] text-[#0C2E2D]'
           : 'border-transparent text-zinc-400 hover:text-zinc-700',
       )}
     >
@@ -185,7 +185,7 @@ export function Roupas() {
             onClick={() => setAddCatOpen(true)}
             aria-label="Criar categoria"
             title="Criar nova categoria"
-            className="flex h-8 w-8 items-center justify-center rounded border border-zinc-200 text-zinc-500 transition-colors hover:border-zinc-900 hover:text-zinc-900"
+            className="flex h-8 w-8 items-center justify-center rounded border border-zinc-200 text-zinc-500 transition-colors hover:border-[#0C2E2D] hover:text-[#0C2E2D]"
           >
             <Plus className="h-4 w-4" />
           </button>
@@ -213,7 +213,7 @@ export function Roupas() {
             <button
               type="button"
               onClick={openNew}
-              className="flex shrink-0 items-center gap-2 rounded bg-gray-900 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-gray-200 transition-all hover:-translate-y-0.5 hover:bg-gray-800"
+              className="flex shrink-0 items-center gap-2 rounded bg-[#0C2E2D] px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-gray-200 transition-all hover:-translate-y-0.5 hover:bg-[#103E3C]"
             >
               <Plus className="h-4 w-4" />
               Adicionar
@@ -300,7 +300,7 @@ export function Roupas() {
                 <button
                   type="button"
                   onClick={() => openEdit(viewItem)}
-                  className="flex flex-1 items-center justify-center gap-2 rounded bg-gray-900 py-2.5 text-sm font-bold text-white transition-colors hover:bg-gray-800"
+                  className="flex flex-1 items-center justify-center gap-2 rounded bg-[#0C2E2D] py-2.5 text-sm font-bold text-white transition-colors hover:bg-[#103E3C]"
                 >
                   <Pencil className="h-4 w-4" />
                   Editar
@@ -414,7 +414,7 @@ export function Roupas() {
             />
           </div>
 
-          <button className="w-full rounded bg-gray-900 py-4 font-black tracking-widest text-white uppercase">
+          <button className="w-full rounded bg-[#0C2E2D] py-4 font-black tracking-widest text-white uppercase">
             Salvar
           </button>
         </form>
@@ -437,7 +437,7 @@ export function Roupas() {
           <button
             type="button"
             onClick={createCategory}
-            className="w-full rounded bg-gray-900 py-3 font-black tracking-widest text-white uppercase"
+            className="w-full rounded bg-[#0C2E2D] py-3 font-black tracking-widest text-white uppercase"
           >
             Criar
           </button>
@@ -464,19 +464,19 @@ export function Roupas() {
                       value={editName}
                       onChange={(e) => setEditName(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && saveRename()}
-                      className="flex-1 rounded border border-gray-200 bg-white px-2 py-1 text-sm font-medium text-gray-900 outline-none"
+                      className="flex-1 rounded border border-gray-200 bg-white px-2 py-1 text-sm font-medium text-[#0C2E2D] outline-none"
                     />
                     <button
                       type="button"
                       onClick={saveRename}
-                      className="rounded bg-gray-900 px-3 py-1 text-xs font-bold text-white"
+                      className="rounded bg-[#0C2E2D] px-3 py-1 text-xs font-bold text-white"
                     >
                       Salvar
                     </button>
                   </>
                 ) : (
                   <>
-                    <span className="font-medium text-gray-800">{cat}</span>
+                    <span className="font-medium text-[#103E3C]">{cat}</span>
                     <div className="flex items-center gap-1">
                       <button
                         type="button"

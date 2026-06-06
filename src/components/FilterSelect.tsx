@@ -36,7 +36,7 @@ export function FilterSelect({
         id={id}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="rounded border border-gray-100 bg-gray-50 p-3 text-sm font-medium text-gray-900 normal-case transition-all outline-none focus:border-gray-900 focus:bg-white"
+        className="rounded border border-gray-100 bg-gray-50 p-3 text-sm font-medium text-[#0C2E2D] normal-case transition-all outline-none focus:border-[#0C2E2D] focus:bg-white"
       >
         <option value="">{allLabel}</option>
         {options.map((opt) => (

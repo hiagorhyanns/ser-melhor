@@ -17,6 +17,6 @@ describe('cn()', () => {
   });
 
   it('resolves conflicting text colors', () => {
-    expect(cn('text-gray-900', 'text-white')).toBe('text-white');
+    expect(cn('text-[#0C2E2D]', 'text-white')).toBe('text-white');
   });
 });

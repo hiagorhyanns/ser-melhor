@@ -134,7 +134,7 @@ export function Barba() {
           {GUIDE_BARBA.map((card) => (
             <div key={card.titulo} className="w-56 shrink-0 rounded border border-zinc-100 bg-white p-4 shadow-sm">
               <p className="mb-1 text-[9px] font-bold tracking-widest text-zinc-400 uppercase">{card.label}</p>
-              <p className="mb-1.5 text-sm font-bold text-zinc-900">{card.titulo}</p>
+              <p className="mb-1.5 text-sm font-bold text-[#0C2E2D]">{card.titulo}</p>
               <p className="text-xs leading-relaxed text-zinc-500">{card.texto}</p>
             </div>
           ))}
@@ -176,7 +176,7 @@ export function Barba() {
                       {check.done ? (
                         <CheckSquare className="h-5 w-5 text-green-500" />
                       ) : (
-                        <Square className="h-5 w-5 text-gray-300 group-hover:text-gray-900" />
+                        <Square className="h-5 w-5 text-gray-300 group-hover:text-[#0C2E2D]" />
                       )}
                       <span
                         className={cn(
@@ -228,7 +228,7 @@ export function Barba() {
               name="estilo"
               required
               defaultValue={editingItem?.estilo}
-              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
+              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-[#0C2E2D] transition-all outline-none focus:border-[#0C2E2D] focus:bg-white"
               placeholder="Ex: Barba Cerrada, Viking..."
             />
           </div>
@@ -244,7 +244,7 @@ export function Barba() {
               name="frequencia"
               required
               defaultValue={editingItem?.frequencia}
-              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
+              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-[#0C2E2D] transition-all outline-none focus:border-[#0C2E2D] focus:bg-white"
               placeholder="Ex: Semanal, a cada 15 dias..."
             />
           </div>
@@ -259,7 +259,7 @@ export function Barba() {
               id="barba-produtos"
               name="produtos"
               defaultValue={editingItem?.produtos}
-              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
+              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-[#0C2E2D] transition-all outline-none focus:border-[#0C2E2D] focus:bg-white"
               placeholder="Óleo, Balm, Shampoo..."
             />
           </div>
@@ -274,10 +274,10 @@ export function Barba() {
               id="barba-observacoes"
               name="observacoes"
               defaultValue={editingItem?.observacoes}
-              className="min-h-[80px] w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
+              className="min-h-[80px] w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-[#0C2E2D] transition-all outline-none focus:border-[#0C2E2D] focus:bg-white"
             />
           </div>
-          <button className="w-full rounded bg-gray-900 py-4 font-black tracking-widest text-white uppercase">
+          <button className="w-full rounded bg-[#0C2E2D] py-4 font-black tracking-widest text-white uppercase">
             Salvar
           </button>
         </form>

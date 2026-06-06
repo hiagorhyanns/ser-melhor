@@ -113,7 +113,7 @@ export function Postura() {
           {GUIDE_POSTURA.map((card) => (
             <div key={card.titulo} className="w-56 shrink-0 rounded border border-zinc-100 bg-white p-4 shadow-sm">
               <p className="mb-1 text-[9px] font-bold tracking-widest text-zinc-400 uppercase">{card.label}</p>
-              <p className="mb-1.5 text-sm font-bold text-zinc-900">{card.titulo}</p>
+              <p className="mb-1.5 text-sm font-bold text-[#0C2E2D]">{card.titulo}</p>
               <p className="text-xs leading-relaxed text-zinc-500">{card.texto}</p>
             </div>
           ))}
@@ -165,7 +165,7 @@ export function Postura() {
               name="titulo"
               required
               defaultValue={editingItem?.titulo}
-              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
+              className="w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-[#0C2E2D] transition-all outline-none focus:border-[#0C2E2D] focus:bg-white"
             />
           </div>
           <div className="space-y-2">
@@ -180,10 +180,10 @@ export function Postura() {
               name="descricao"
               required
               defaultValue={editingItem?.descricao}
-              className="min-h-[100px] w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white"
+              className="min-h-[100px] w-full rounded border border-transparent bg-gray-50 p-4 font-medium text-[#0C2E2D] transition-all outline-none focus:border-[#0C2E2D] focus:bg-white"
             />
           </div>
-          <button className="w-full rounded bg-gray-900 py-4 font-black tracking-widest text-white uppercase">
+          <button className="w-full rounded bg-[#0C2E2D] py-4 font-black tracking-widest text-white uppercase">
             Salvar
           </button>
         </form>

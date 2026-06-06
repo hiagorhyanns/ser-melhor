@@ -13,7 +13,6 @@ import {
   Instagram,
   Globe,
   ShoppingBag,
-  Link as LinkIcon,
   Plus,
   Settings,
   X,
@@ -106,7 +105,7 @@ function ContactRow({
       target={external ? '_blank' : undefined}
       rel={external ? 'noreferrer' : undefined}
       onClick={(e) => e.stopPropagation()}
-      className="flex items-center gap-2.5 text-sm text-gray-600 transition-colors hover:text-gray-900"
+      className="flex items-center gap-2.5 text-sm text-gray-600 transition-colors hover:text-[#0C2E2D]"
     >
       <Icon className="h-4 w-4 shrink-0 text-gray-400" />
       <span className="truncate">{children}</span>
@@ -115,7 +114,7 @@ function ContactRow({
 }
 
 const inputCls =
-  'w-full rounded border border-transparent bg-gray-50 p-3 font-medium text-gray-900 transition-all outline-none focus:border-gray-900 focus:bg-white';
+  'w-full rounded border border-transparent bg-gray-50 p-3 font-medium text-[#0C2E2D] transition-all outline-none focus:border-[#0C2E2D] focus:bg-white';
 const labelCls = 'text-xs font-bold tracking-widest text-gray-400 uppercase';
 
 export function Lojas() {
@@ -318,7 +317,7 @@ export function Lojas() {
               className={cn(
                 'whitespace-nowrap border-b-2 px-4 py-2.5 text-sm font-medium transition-all',
                 activeTab === tab.id
-                  ? 'border-zinc-900 text-zinc-900'
+                  ? 'border-[#0C2E2D] text-[#0C2E2D]'
                   : 'border-transparent text-zinc-400 hover:text-zinc-700',
               )}
             >
@@ -332,7 +331,7 @@ export function Lojas() {
             onClick={() => setAddCatOpen(true)}
             aria-label="Criar categoria"
             title="Criar nova categoria"
-            className="flex h-8 w-8 items-center justify-center rounded border border-zinc-200 text-zinc-500 transition-colors hover:border-zinc-900 hover:text-zinc-900"
+            className="flex h-8 w-8 items-center justify-center rounded border border-zinc-200 text-zinc-500 transition-colors hover:border-[#0C2E2D] hover:text-[#0C2E2D]"
           >
             <Plus className="h-4 w-4" />
           </button>
@@ -354,7 +353,7 @@ export function Lojas() {
           {GUIDE_LOJAS.map((card) => (
             <div key={card.titulo} className="rounded border border-zinc-100 bg-white p-4 shadow-sm">
               <p className="mb-1 text-[9px] font-bold tracking-widest text-zinc-400 uppercase">{card.label}</p>
-              <p className="mb-1.5 text-sm font-bold text-zinc-900">{card.titulo}</p>
+              <p className="mb-1.5 text-sm font-bold text-[#0C2E2D]">{card.titulo}</p>
               <p className="text-xs leading-relaxed text-zinc-500">{card.texto}</p>
             </div>
           ))}
@@ -384,18 +383,22 @@ export function Lojas() {
               }}
               icon={<Store />}
               iconImage={resolveLogo(item)}
-              footer={
-                <div className="flex w-full items-center justify-between gap-2">
+              topBar={
+                <>
+                  {item.cidade && (
+                    <span className="truncate text-xs font-bold tracking-wider text-gray-400 uppercase">
+                      {item.cidade}
+                    </span>
+                  )}
                   <span
                     className={cn(
-                      'rounded-md px-2 py-1 text-[10px] font-bold tracking-wider uppercase',
+                      'shrink-0 rounded-md px-2 py-1 text-[10px] font-bold tracking-wider uppercase',
                       STATUS_BADGE[item.status],
                     )}
                   >
                     {item.status}
                   </span>
-                  {item.cidade && <span className="normal-case">{item.cidade}</span>}
-                </div>
+                </>
               }
             >
               <div className="space-y-2">
@@ -423,12 +426,6 @@ export function Lojas() {
                 <div className="rounded bg-gray-50 p-3">
                   <p className="text-xs leading-relaxed text-gray-600">{item.observacao}</p>
                 </div>
-              )}
-
-              {item.fonte && (
-                <ContactRow icon={LinkIcon} href={urlHref(item.fonte)}>
-                  Fonte do dado
-                </ContactRow>
               )}
             </Card>
           </SortableItem>
@@ -581,7 +578,7 @@ export function Lojas() {
             />
           </div>
 
-          <button className="w-full rounded bg-gray-900 py-4 font-black tracking-widest text-white uppercase shadow-xl shadow-gray-200">
+          <button className="w-full rounded bg-[#0C2E2D] py-4 font-black tracking-widest text-white uppercase shadow-xl shadow-gray-200">
             Salvar
           </button>
         </form>
@@ -604,7 +601,7 @@ export function Lojas() {
           <button
             type="button"
             onClick={createCategory}
-            className="w-full rounded bg-gray-900 py-3 font-black tracking-widest text-white uppercase"
+            className="w-full rounded bg-[#0C2E2D] py-3 font-black tracking-widest text-white uppercase"
           >
             Criar
           </button>
@@ -624,7 +621,7 @@ export function Lojas() {
                 key={cat}
                 className="flex items-center justify-between rounded border border-gray-100 bg-gray-50 px-4 py-3"
               >
-                <span className="font-medium text-gray-800">{cat}</span>
+                <span className="font-medium text-[#103E3C]">{cat}</span>
                 <button
                   type="button"
                   onClick={() => removeCategory(cat)}

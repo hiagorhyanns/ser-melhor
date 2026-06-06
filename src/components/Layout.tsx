@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   Tag,
@@ -10,6 +10,7 @@ import {
   Accessibility,
   Dumbbell,
   Briefcase,
+  PanelLeft,
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { motion } from 'motion/react';
@@ -26,18 +27,37 @@ const navItems = [
   { to: '/musculos', icon: Dumbbell, label: 'Músculos' },
 ];
 
-const NAV_ACTIVE = 'bg-zinc-900 text-white';
-const NAV_IDLE = 'text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900';
+const NAV_ACTIVE = 'bg-[#0C2E2D] text-white';
+const NAV_IDLE = 'text-zinc-500 hover:bg-zinc-100 hover:text-[#0C2E2D]';
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  // Carrega encolhido (só ícones); botão expande.
+  const [collapsed, setCollapsed] = useState(true);
+
   return (
-    <div className="flex min-h-screen bg-zinc-100 text-zinc-900">
-      {/* ── Desktop Sidebar ── */}
-      <aside className="sticky top-0 hidden h-screen w-56 shrink-0 flex-col border-r border-zinc-200 bg-white md:flex">
-        <div className="border-b border-zinc-100 px-5 py-4">
-          <h1 className="text-sm font-bold tracking-widest text-zinc-900 uppercase">
-            Ser Melhor
-          </h1>
+    <div className="flex min-h-screen bg-zinc-100 text-[#0C2E2D]">
+      {/* ── Desktop Sidebar (colapsável) ── */}
+      <aside
+        className={cn(
+          'sticky top-0 hidden h-screen shrink-0 flex-col border-r border-zinc-200 bg-white transition-all duration-200 md:flex',
+          collapsed ? 'w-16' : 'w-56',
+        )}
+      >
+        <div
+          className={cn(
+            'flex items-center border-b border-zinc-100 px-2 py-3',
+            collapsed ? 'justify-center' : 'justify-end',
+          )}
+        >
+          <button
+            type="button"
+            onClick={() => setCollapsed((c) => !c)}
+            aria-label={collapsed ? 'Expandir menu' : 'Encolher menu'}
+            title={collapsed ? 'Expandir' : 'Encolher'}
+            className="flex h-9 w-9 items-center justify-center rounded text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-[#0C2E2D]"
+          >
+            <PanelLeft className="h-5 w-5" />
+          </button>
         </div>
         <nav className="flex-1 overflow-y-auto p-2">
           <div className="space-y-0.5">
@@ -45,29 +65,22 @@ export function Layout({ children }: { children: React.ReactNode }) {
               <NavLink
                 key={item.to}
                 to={item.to}
+                title={item.label}
                 className={({ isActive }) =>
                   cn(
-                    'flex items-center gap-3 rounded px-3 py-2.5 text-sm font-medium transition-all',
+                    'flex items-center gap-3 rounded py-2.5 text-sm font-medium transition-all',
+                    collapsed ? 'justify-center px-0' : 'px-3',
                     isActive ? NAV_ACTIVE : NAV_IDLE,
                   )
                 }
               >
                 <item.icon className="h-4 w-4 shrink-0" />
-                {item.label}
+                {!collapsed && item.label}
               </NavLink>
             ))}
           </div>
         </nav>
       </aside>
-
-      {/* ── Mobile Top Header ── */}
-      <div className="fixed inset-x-0 top-0 z-50 border-b border-zinc-200 bg-white md:hidden">
-        <header className="flex items-center justify-center px-4 py-3">
-          <h1 className="text-sm font-bold tracking-widest text-zinc-900 uppercase">
-            Ser Melhor
-          </h1>
-        </header>
-      </div>
 
       {/* ── Mobile Bottom Nav ── */}
       <div className="fixed inset-x-0 bottom-0 z-50 md:hidden">
@@ -82,7 +95,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
               className={({ isActive }) =>
                 cn(
                   'flex min-w-[64px] flex-col items-center justify-center gap-0.5 py-2.5 text-[9px] font-bold uppercase tracking-widest transition-colors',
-                  isActive ? 'text-zinc-900' : 'text-zinc-400',
+                  isActive ? 'text-[#0C2E2D]' : 'text-zinc-400',
                 )
               }
             >
@@ -94,7 +107,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* ── Main content ── */}
-      <main className="min-w-0 flex-1 pt-[49px] pb-[68px] md:pb-0 md:pt-0">
+      <main className="min-w-0 flex-1 pb-[68px] md:pb-0">
         <div className="mx-auto max-w-6xl p-4 md:p-8">
           <motion.div
             key="content"
