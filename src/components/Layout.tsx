@@ -45,16 +45,26 @@ export function Layout({ children }: { children: React.ReactNode }) {
       >
         <div
           className={cn(
-            'flex items-center border-b border-zinc-100 px-2 py-3',
-            collapsed ? 'justify-center' : 'justify-end',
+            'flex items-center gap-2 border-b border-zinc-100 px-2 py-3',
+            collapsed ? 'justify-center' : 'justify-between',
           )}
         >
+          {!collapsed && (
+            <img
+              src="/logo.png"
+              alt="Ser Melhor"
+              className="h-9 w-auto object-contain"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+              }}
+            />
+          )}
           <button
             type="button"
             onClick={() => setCollapsed((c) => !c)}
             aria-label={collapsed ? 'Expandir menu' : 'Encolher menu'}
             title={collapsed ? 'Expandir' : 'Encolher'}
-            className="flex h-9 w-9 items-center justify-center rounded text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-[#0C2E2D]"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-[#0C2E2D]"
           >
             <PanelLeft className="h-5 w-5" />
           </button>

@@ -17,8 +17,8 @@ export default defineConfig(() => {
           short_name: 'Ser Melhor',
           description:
             'Guia pessoal de estilo, cuidados e presença visual. Organize marcas, lojas, barba, cabelo, produtos, roupas, postura e exercícios.',
-          theme_color: '#111827',
-          background_color: '#f9fafb',
+          theme_color: '#0C2E2D',
+          background_color: '#ffffff',
           display: 'standalone',
           start_url: '/',
           icons: [
@@ -31,8 +31,12 @@ export default defineConfig(() => {
           ],
         },
         workbox: {
-          // Cache JS, CSS, HTML, fonts e o ícone SVG
-          globPatterns: ['**/*.{js,css,html,svg,woff,woff2}'],
+          // Ativa o novo SW imediatamente (evita "não atualizou" após deploy)
+          skipWaiting: true,
+          clientsClaim: true,
+          cleanupOutdatedCaches: true,
+          // Cache JS, CSS, HTML, fonts e imagens (svg/png)
+          globPatterns: ['**/*.{js,css,html,svg,png,woff,woff2}'],
           // localStorage não precisa de cache — é local por definição
           runtimeCaching: [
             {
