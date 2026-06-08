@@ -68,6 +68,8 @@ const INITIAL_DATA: AppData = {
   roupaCategorias: ['Básicos', 'Paleta', 'Formalidade', 'Ajustar'],
   produtoCategorias: [],
   lojaCategorias: [],
+  barbaCategorias: [],
+  cabeloCategorias: [],
   lojaLogos: {},
   ternoImagens: {},
 };

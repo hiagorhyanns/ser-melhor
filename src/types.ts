@@ -37,24 +37,6 @@ export interface Loja extends BaseItem {
   fonte?: string;
 }
 
-export interface BarbaItem extends BaseItem {
-  estilo: string;
-  frequencia: string;
-  produtos: string;
-  observacoes: string;
-  checklist: { text: string; done: boolean }[];
-}
-
-export interface CabeloItem extends BaseItem {
-  tipoCorte: string;
-  referencia: string;
-  frequencia: string;
-  produtos: string;
-  barbeiro: string;
-  observacoes: string;
-  foto?: string;
-}
-
 export interface Produto extends BaseItem {
   nome: string;
   categoria: string;
@@ -91,8 +73,8 @@ export interface MusculoItem extends BaseItem {
 export type AppData = {
   marcas: Marca[];
   lojas: Loja[];
-  barba: BarbaItem[];
-  cabelo: CabeloItem[];
+  barba: Roupa[];
+  cabelo: Roupa[];
   produtos: Produto[];
   roupas: Roupa[];
   postura: PosturaItem[];
@@ -101,6 +83,8 @@ export type AppData = {
   roupaCategorias?: string[];
   produtoCategorias?: string[];
   lojaCategorias?: string[];
+  barbaCategorias?: string[];
+  cabeloCategorias?: string[];
   // Biblioteca de logos de loja reutilizáveis (chave = nome normalizado → URL)
   lojaLogos?: Record<string, string>;
   // Imagens dos estilos de terno trocadas pelo usuário (chave = id do estilo → URL)
