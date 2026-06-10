@@ -351,7 +351,7 @@ export function Lojas() {
       {activeTab === 'dicas' && (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {GUIDE_LOJAS.map((card) => (
-            <div key={card.titulo} className="rounded border border-zinc-100 bg-white p-4 shadow-sm">
+            <div key={card.titulo} className="rounded bg-white p-4 transition-shadow hover:shadow-md">
               <p className="mb-1 text-[9px] font-bold tracking-widest text-zinc-400 uppercase">{card.label}</p>
               <p className="mb-1.5 text-sm font-bold text-[#0C2E2D]">{card.titulo}</p>
               <p className="text-xs leading-relaxed text-zinc-500">{card.texto}</p>

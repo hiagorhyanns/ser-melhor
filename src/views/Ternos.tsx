@@ -563,7 +563,7 @@ export function Ternos() {
           {ESTILOS.map((estilo) => (
             <div
               key={estilo.id}
-              className="overflow-hidden rounded border border-zinc-200 bg-white"
+              className="overflow-hidden rounded bg-white transition-shadow hover:shadow-md"
             >
               <div className="relative grid md:grid-cols-[300px_1fr]">
                 <button
@@ -638,7 +638,7 @@ export function Ternos() {
           </div>
 
           {/* Image reference */}
-          <div className="overflow-hidden rounded border border-zinc-200 bg-white">
+          <div className="overflow-hidden rounded bg-white transition-shadow hover:shadow-md">
             <img
               src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1200&q=80"
               alt="Anatomia do terno"
@@ -653,7 +653,7 @@ export function Ternos() {
             {PARTES.map((parte) => (
               <div
                 key={parte.nome}
-                className="rounded border border-zinc-200 bg-white p-5"
+                className="rounded bg-white p-5 transition-shadow hover:shadow-md"
               >
                 <div className="mb-3 flex items-center gap-3">
                   <span className="text-2xl">{parte.emoji}</span>
@@ -693,7 +693,7 @@ export function Ternos() {
             {TECIDOS.map((tecido) => (
               <div
                 key={tecido.nome}
-                className="overflow-hidden rounded border border-zinc-200 bg-white"
+                className="overflow-hidden rounded bg-white transition-shadow hover:shadow-md"
               >
                 <div className={cn('flex items-center gap-3 p-4', tecido.cor)}>
                   <span className="text-3xl">{tecido.emoji}</span>
@@ -758,7 +758,7 @@ export function Ternos() {
             {LOJAS.map((loja) => (
               <div
                 key={loja.nome}
-                className="overflow-hidden rounded border border-zinc-200 bg-white"
+                className="overflow-hidden rounded bg-white transition-shadow hover:shadow-md"
               >
                 <div className={cn('flex items-center justify-between px-5 py-3', loja.cor)}>
                   <div>
@@ -840,7 +840,7 @@ export function Ternos() {
           {/* Quick tip cards */}
           <div className="grid gap-4 sm:grid-cols-2">
             {DICAS_RAPIDAS.map((dica) => (
-              <div key={dica.titulo} className="rounded border border-zinc-200 bg-white p-5">
+              <div key={dica.titulo} className="rounded bg-white p-5 transition-shadow hover:shadow-md">
                 <h3 className="mb-2 font-bold text-[#0C2E2D]">{dica.titulo}</h3>
                 <p className="text-sm leading-relaxed text-zinc-600">{dica.texto}</p>
               </div>
@@ -852,7 +852,7 @@ export function Ternos() {
             <h2 className="mb-3 text-base font-bold text-[#0C2E2D]">Referências visuais de caimento</h2>
             <div className="grid gap-4 sm:grid-cols-3">
               {FIT_REFS.map((ref) => (
-                <div key={ref.legenda} className="overflow-hidden rounded border border-zinc-200 bg-white">
+                <div key={ref.legenda} className="overflow-hidden rounded bg-white transition-shadow hover:shadow-md">
                   <img
                     src={ref.img}
                     alt={ref.legenda}
@@ -866,7 +866,7 @@ export function Ternos() {
           </div>
 
           {/* Checklist para o shopping */}
-          <div className="rounded border border-zinc-200 bg-white p-5">
+          <div className="rounded bg-white p-5 transition-shadow hover:shadow-md">
             <h3 className="mb-4 font-bold text-[#0C2E2D]">✅ Checklist — O que perguntar na loja</h3>
             <div className="space-y-2">
               {CHECKLIST_PERGUNTAS.map((item) => (

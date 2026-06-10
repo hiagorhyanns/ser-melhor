@@ -9,6 +9,7 @@ import {
   Shirt,
   Accessibility,
   Briefcase,
+  AtSign,
   PanelLeft,
 } from 'lucide-react';
 import { cn } from '../lib/utils';
@@ -23,6 +24,7 @@ const navItems = [
   { to: '/produtos', icon: Package, label: 'Produtos' },
   { to: '/marcas', icon: Tag, label: 'Marcas' },
   { to: '/postura', icon: Accessibility, label: 'Postura' },
+  { to: '/rede-social', icon: AtSign, label: 'Rede Social' },
 ];
 
 const NAV_ACTIVE = 'bg-[#0C2E2D] text-white';

@@ -128,7 +128,7 @@ export function Marcas() {
       <div className="-mx-4 mb-6 overflow-x-auto px-4 md:mx-0 md:px-0">
         <div className="flex gap-3 pb-1" style={{ width: 'max-content' }}>
           {GUIDE_MARCAS.map((card) => (
-            <div key={card.titulo} className="w-56 shrink-0 rounded border border-zinc-100 bg-white p-4 shadow-sm">
+            <div key={card.titulo} className="w-56 shrink-0 rounded bg-white p-4 transition-shadow hover:shadow-md">
               <p className="mb-1 text-[9px] font-bold tracking-widest text-zinc-400 uppercase">{card.label}</p>
               <p className="mb-1.5 text-sm font-bold text-[#0C2E2D]">{card.titulo}</p>
               <p className="text-xs leading-relaxed text-zinc-500">{card.texto}</p>

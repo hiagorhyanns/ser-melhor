@@ -65,6 +65,7 @@ const INITIAL_DATA: AppData = {
       createdAt: Date.now(),
     },
   ],
+  redesSociais: [],
   roupaCategorias: ['Básicos', 'Paleta', 'Formalidade', 'Ajustar'],
   produtoCategorias: [],
   lojaCategorias: [],
@@ -84,6 +85,8 @@ function backfillSeed(d: AppData): AppData {
     lojas: d.lojas?.length ? d.lojas : INITIAL_DATA.lojas,
     roupas: d.roupas?.length ? d.roupas : INITIAL_DATA.roupas,
     produtos: d.produtos?.length ? d.produtos : INITIAL_DATA.produtos,
+    // Dados antigos na nuvem podem não ter a chave ainda.
+    redesSociais: d.redesSociais ?? [],
   };
 }
 
@@ -212,8 +215,8 @@ export function AppDataProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem(STORAGE_KEY, json);
   }, [data]);
 
-  function addItem<K extends CollectionKey>(key: K, item: AppData[K][number]) {
-    setData((prev) => ({ ...prev, [key]: [item, ...prev[key]] }));
+  function addItem<K extends CollectionKey>(key: K, item: NonNullable<AppData[K]>[number]) {
+    setData((prev) => ({ ...prev, [key]: [item, ...(prev[key] ?? [])] }));
   }
 
   function updateItem<K extends CollectionKey>(

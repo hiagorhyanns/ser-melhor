@@ -57,6 +57,12 @@ export interface Roupa extends BaseItem {
   foto?: string;
 }
 
+export interface RedeSocial extends BaseItem {
+  nome: string;
+  link: string;
+  foto?: string;
+}
+
 export interface PosturaItem extends BaseItem {
   titulo: string;
   descricao: string;
@@ -79,6 +85,7 @@ export type AppData = {
   roupas: Roupa[];
   postura: PosturaItem[];
   musculos: MusculoItem[];
+  redesSociais: RedeSocial[];
   // Categorias (abas) personalizadas criadas pelo usuário
   roupaCategorias?: string[];
   produtoCategorias?: string[];

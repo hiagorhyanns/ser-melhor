@@ -77,8 +77,8 @@ export function Card({
     <motion.div
       layout
       className={cn(
-        'rounded border border-gray-100 bg-white p-4 transition-all duration-300',
-        completed ? 'scale-[0.98] border-transparent bg-gray-50 opacity-80' : 'hover:shadow-md',
+        'rounded bg-white p-4 transition-all duration-300',
+        completed ? 'scale-[0.98] bg-gray-50 opacity-80' : 'hover:shadow-md',
       )}
     >
       {/* Linha de topo: conteúdo (cidade/status) + ações */}
@@ -92,7 +92,7 @@ export function Card({
       <div className="mb-3 flex items-start justify-between">
         <div className="flex gap-4">
           {iconImage ? (
-            <div className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded border border-gray-100 bg-white">
+            <div className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded bg-white">
               <Store className="absolute h-5 w-5 text-gray-300" />
               <img
                 src={iconImage}

@@ -275,7 +275,7 @@ export function Produtos() {
                   key={item.id}
                   type="button"
                   onClick={() => setViewItem(item)}
-                  className="group block w-full break-inside-avoid overflow-hidden rounded border border-gray-100 bg-white text-left shadow-sm transition-all hover:shadow-md"
+                  className="group block w-full break-inside-avoid overflow-hidden rounded bg-white text-left transition-all hover:shadow-md"
                 >
                   {item.foto ? (
                     <img

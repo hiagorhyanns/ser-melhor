@@ -1,7 +1,8 @@
 @import 'tailwindcss';
 
 @theme {
-  --font-sans: 'Playfair Display', ui-serif, Georgia, serif;
+  --font-sans: 'Roboto', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Playfair Display', ui-serif, Georgia, serif;
 
   /* Paleta pastel — escala "zinc" remapeada a partir do tom base #E7DAC9.
      Todo uso de zinc-* no app herda a paleta automaticamente. */
@@ -22,12 +23,13 @@
   --color-gray-200: #e7dac9;
   --color-gray-300: #d7c4aa;
   --color-gray-400: #b59d7d;
-  --color-gray-500: #93805f;
-  --color-gray-600: #76654a;
-  --color-gray-700: #5b4e39;
-  --color-gray-800: #3e3527;
-  --color-gray-900: #2a2419;
-  --color-gray-950: #1a160f;
+  /* Tons de texto escurecidos para leitura (texto corrido em preto) */
+  --color-gray-500: #3d3d3d;
+  --color-gray-600: #2b2b2b;
+  --color-gray-700: #1c1c1c;
+  --color-gray-800: #141414;
+  --color-gray-900: #0a0a0a;
+  --color-gray-950: #000000;
 }
 
 body {
@@ -35,7 +37,19 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #e7dac9;
-  color: #2a2419;
+  color: #000000;
+}
+
+/* Títulos, categorias (labels uppercase) e links mantêm a fonte display */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+a,
+.uppercase {
+  font-family: var(--font-display);
 }
 
 ::-webkit-scrollbar {
