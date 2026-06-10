@@ -6,6 +6,7 @@ import {
   Scissors,
   User,
   Package,
+  Shirt,
   Accessibility,
   Briefcase,
   PanelLeft,
@@ -14,6 +15,7 @@ import { cn } from '../lib/utils';
 import { motion } from 'motion/react';
 
 const navItems = [
+  { to: '/roupas', icon: Shirt, label: 'Roupas' },
   { to: '/ternos', icon: Briefcase, label: 'Ternos' },
   { to: '/lojas', icon: Store, label: 'Lojas' },
   { to: '/barba', icon: Scissors, label: 'Barba' },
