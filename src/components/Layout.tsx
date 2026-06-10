@@ -6,9 +6,7 @@ import {
   Scissors,
   User,
   Package,
-  Shirt,
   Accessibility,
-  Dumbbell,
   Briefcase,
   PanelLeft,
 } from 'lucide-react';
@@ -16,7 +14,6 @@ import { cn } from '../lib/utils';
 import { motion } from 'motion/react';
 
 const navItems = [
-  { to: '/roupas', icon: Shirt, label: 'Roupas' },
   { to: '/ternos', icon: Briefcase, label: 'Ternos' },
   { to: '/lojas', icon: Store, label: 'Lojas' },
   { to: '/barba', icon: Scissors, label: 'Barba' },
@@ -24,7 +21,6 @@ const navItems = [
   { to: '/produtos', icon: Package, label: 'Produtos' },
   { to: '/marcas', icon: Tag, label: 'Marcas' },
   { to: '/postura', icon: Accessibility, label: 'Postura' },
-  { to: '/musculos', icon: Dumbbell, label: 'Músculos' },
 ];
 
 const NAV_ACTIVE = 'bg-[#0C2E2D] text-white';
@@ -35,7 +31,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(true);
 
   return (
-    <div className="flex min-h-screen bg-zinc-100 text-[#0C2E2D]">
+    <div className="flex min-h-screen bg-zinc-200 text-[#0C2E2D]">
       {/* ── Desktop Sidebar (colapsável) ── */}
       <aside
         className={cn(
@@ -96,7 +92,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <div className="fixed inset-x-0 bottom-0 z-50 md:hidden">
         <nav
           className="flex overflow-x-auto bg-white [&::-webkit-scrollbar]:hidden"
-          style={{ boxShadow: '0 -1px 0 0 #e4e4e7' }}
+          style={{ boxShadow: '0 -1px 0 0 #d7c4aa' }}
         >
           {navItems.map((item) => (
             <NavLink

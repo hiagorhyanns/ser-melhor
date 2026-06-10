@@ -11,17 +11,23 @@ export default defineConfig(() => {
       tailwindcss(),
       VitePWA({
         registerType: 'autoUpdate',
-        includeAssets: ['icon.svg'],
+        includeAssets: ['icon.svg', 'logo.png'],
         manifest: {
           name: 'Ser Melhor',
           short_name: 'Ser Melhor',
           description:
-            'Guia pessoal de estilo, cuidados e presença visual. Organize marcas, lojas, barba, cabelo, produtos, roupas, postura e exercícios.',
-          theme_color: '#0C2E2D',
-          background_color: '#ffffff',
+            'Guia pessoal de estilo, cuidados e presença visual. Organize marcas, lojas, barba, cabelo, produtos, postura e ternos.',
+          theme_color: '#E7DAC9',
+          background_color: '#E7DAC9',
           display: 'standalone',
           start_url: '/',
           icons: [
+            {
+              src: 'logo.png',
+              sizes: 'any',
+              type: 'image/png',
+              purpose: 'any',
+            },
             {
               src: 'icon.svg',
               sizes: 'any',
