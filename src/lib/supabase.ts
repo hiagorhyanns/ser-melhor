@@ -20,17 +20,22 @@ export const SUPABASE_ENABLED = supabase !== null;
 export const IMAGES_BUCKET = 'images';
 
 /**
- * Sobe um arquivo de imagem para o Storage e retorna a URL pública.
+ * Sobe qualquer arquivo (imagem, vídeo) para o Storage e retorna a URL pública.
  * Lança erro se o Supabase não estiver configurado.
  */
-export async function uploadImage(file: File): Promise<string> {
+export async function uploadFile(file: File, fallbackExt = 'bin'): Promise<string> {
   if (!supabase) throw new Error('Supabase não configurado');
-  const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+  const ext = file.name.split('.').pop()?.toLowerCase() || fallbackExt;
   const path = `${crypto.randomUUID()}.${ext}`;
   const { error } = await supabase.storage
     .from(IMAGES_BUCKET)
-    .upload(path, file, { cacheControl: '31536000', upsert: false });
+    .upload(path, file, { cacheControl: '31536000', upsert: false, contentType: file.type || undefined });
   if (error) throw error;
   const { data } = supabase.storage.from(IMAGES_BUCKET).getPublicUrl(path);
   return data.publicUrl;
+}
+
+/** Sobe uma imagem para o Storage e retorna a URL pública. */
+export async function uploadImage(file: File): Promise<string> {
+  return uploadFile(file, 'jpg');
 }

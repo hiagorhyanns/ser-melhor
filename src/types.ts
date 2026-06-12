@@ -68,6 +68,13 @@ export interface PosturaItem extends BaseItem {
   descricao: string;
 }
 
+export interface VideoItem {
+  id: string;
+  url: string;
+  titulo: string;
+  createdAt: number;
+}
+
 export interface MusculoItem extends BaseItem {
   musculo: string;
   objetivo: string;
@@ -92,6 +99,8 @@ export type AppData = {
   lojaCategorias?: string[];
   barbaCategorias?: string[];
   cabeloCategorias?: string[];
+  // Feed de vídeos da tela Postura
+  posturaVideos?: VideoItem[];
   // Biblioteca de logos de loja reutilizáveis (chave = nome normalizado → URL)
   lojaLogos?: Record<string, string>;
   // Imagens dos estilos de terno trocadas pelo usuário (chave = id do estilo → URL)
