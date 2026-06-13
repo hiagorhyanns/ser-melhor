@@ -4,9 +4,11 @@ import { PageHeader, Modal } from '../components/PageHeader';
 import { Card } from '../components/Card';
 import { FilterSelect } from '../components/FilterSelect';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
-import { Accessibility, Upload, Loader2, Trash2, Video, Link2 } from 'lucide-react';
-import { PosturaItem } from '../types';
+import { Accessibility, Upload, Loader2, Trash2, Video, Link2, GripVertical } from 'lucide-react';
+import { PosturaItem, VideoItem } from '../types';
 import { SortableGrid, SortableItem } from '../components/SortableGrid';
+import { useSortable, arrayMove } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { SUPABASE_ENABLED, uploadFile } from '../lib/supabase';
 import { cn } from '../lib/utils';
 
@@ -60,6 +62,60 @@ function videoEmbed(url: string): { kind: 'video' | 'iframe'; src: string } {
   if (dr) return { kind: 'iframe', src: `https://drive.google.com/file/d/${dr}/preview` };
   if (/\.(mp4|webm|ogg|mov|m4v)(\?|#|$)/i.test(url)) return { kind: 'video', src: url };
   return { kind: 'iframe', src: url };
+}
+
+// Card de vídeo arrastável (handle + deletar no canto superior direito).
+function SortableVideoCard({ v, onDelete }: { v: VideoItem; onDelete: (id: string) => void }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: v.id,
+  });
+  const emb = videoEmbed(v.url);
+  return (
+    <div
+      ref={setNodeRef}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+        zIndex: isDragging ? 20 : undefined,
+        opacity: isDragging ? 0.6 : 1,
+      }}
+      className="relative overflow-hidden rounded border border-gray-100 bg-white shadow-sm"
+    >
+      {emb.kind === 'video' ? (
+        <video src={emb.src} controls className="block w-full" />
+      ) : (
+        <iframe
+          src={emb.src}
+          title={v.titulo}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          className="aspect-video w-full"
+        />
+      )}
+
+      {/* Ações: arrastar (cima) + deletar (baixo) no canto superior direito */}
+      <div className="absolute top-2 right-2 z-10 flex flex-col gap-2">
+        <button
+          {...attributes}
+          {...listeners}
+          aria-label="Arrastar para reordenar"
+          title="Arrastar"
+          className="flex h-9 w-9 cursor-grab touch-none items-center justify-center rounded-full bg-white/90 text-gray-500 shadow backdrop-blur transition-colors hover:text-[#0C2E2D] active:cursor-grabbing"
+        >
+          <GripVertical className="h-5 w-5" />
+        </button>
+        <button
+          type="button"
+          onClick={() => onDelete(v.id)}
+          aria-label="Deletar"
+          title="Deletar"
+          className="flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-gray-500 shadow backdrop-blur transition-colors hover:bg-red-50 hover:text-red-500"
+        >
+          <Trash2 className="h-5 w-5" />
+        </button>
+      </div>
+    </div>
+  );
 }
 
 export function Postura() {
@@ -116,6 +172,13 @@ export function Postura() {
 
   const removeVideo = (id: string) =>
     patchRoot({ posturaVideos: videos.filter((v) => v.id !== id) });
+
+  const handleReorderVideos = (activeId: string, overId: string) => {
+    const from = videos.findIndex((v) => v.id === activeId);
+    const to = videos.findIndex((v) => v.id === overId);
+    if (from < 0 || to < 0) return;
+    patchRoot({ posturaVideos: arrayMove(videos, from, to) });
+  };
 
   // ── Dicas (conteúdo original) ──
   const [search, setSearch] = useState('');
@@ -226,42 +289,15 @@ export function Postura() {
               </p>
             </div>
           ) : (
-            <div className="mx-auto max-w-2xl space-y-6">
-              {videos.map((v) => {
-                const emb = videoEmbed(v.url);
-                return (
-                  <div
-                    key={v.id}
-                    className="overflow-hidden rounded border border-gray-100 bg-white shadow-sm transition-shadow hover:shadow-md"
-                  >
-                    {emb.kind === 'video' ? (
-                      // Arquivo: largura cheia, altura natural do vídeo (sem letterbox)
-                      <video src={emb.src} controls className="block w-full" />
-                    ) : (
-                      // Embed (YouTube/Drive): sem altura intrínseca → 16:9
-                      <iframe
-                        src={emb.src}
-                        title={v.titulo}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        className="aspect-video w-full"
-                      />
-                    )}
-                    <div className="flex items-center justify-between gap-2 px-3 py-2">
-                      <p className="truncate text-xs font-medium text-gray-700">{v.titulo}</p>
-                      <button
-                        type="button"
-                        onClick={() => removeVideo(v.id)}
-                        aria-label="Remover vídeo"
-                        className="shrink-0 rounded-full p-1.5 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+            <SortableGrid
+              ids={videos.map((v) => v.id)}
+              onReorder={handleReorderVideos}
+              className="mx-auto max-w-2xl space-y-6"
+            >
+              {videos.map((v) => (
+                <SortableVideoCard key={v.id} v={v} onDelete={removeVideo} />
+              ))}
+            </SortableGrid>
           )}
         </div>
       )}
