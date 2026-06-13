@@ -226,7 +226,7 @@ export function Postura() {
               </p>
             </div>
           ) : (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="mx-auto max-w-2xl space-y-6">
               {videos.map((v) => {
                 const emb = videoEmbed(v.url);
                 return (
@@ -235,18 +235,16 @@ export function Postura() {
                     className="overflow-hidden rounded border border-gray-100 bg-white shadow-sm transition-shadow hover:shadow-md"
                   >
                     {emb.kind === 'video' ? (
-                      <video
-                        src={emb.src}
-                        controls
-                        className="aspect-[9/16] w-full bg-black object-contain"
-                      />
+                      // Arquivo: largura cheia, altura natural do vídeo (sem letterbox)
+                      <video src={emb.src} controls className="block w-full" />
                     ) : (
+                      // Embed (YouTube/Drive): sem altura intrínseca → 16:9
                       <iframe
                         src={emb.src}
                         title={v.titulo}
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
-                        className="aspect-video w-full bg-black"
+                        className="aspect-video w-full"
                       />
                     )}
                     <div className="flex items-center justify-between gap-2 px-3 py-2">
