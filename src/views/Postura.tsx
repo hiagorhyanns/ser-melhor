@@ -4,7 +4,7 @@ import { PageHeader, Modal } from '../components/PageHeader';
 import { Card } from '../components/Card';
 import { FilterSelect } from '../components/FilterSelect';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
-import { Accessibility, Upload, Loader2, Trash2, Video } from 'lucide-react';
+import { Accessibility, Upload, Loader2, Trash2, Video, Link2 } from 'lucide-react';
 import { PosturaItem } from '../types';
 import { SortableGrid, SortableItem } from '../components/SortableGrid';
 import { SUPABASE_ENABLED, uploadFile } from '../lib/supabase';
@@ -42,6 +42,26 @@ const TABS = [
   { id: 'dicas', label: 'Dicas' },
 ];
 
+// Converte uma URL (YouTube / Google Drive / arquivo direto) em embed.
+function ytId(url: string) {
+  const m = url.match(
+    /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/))([\w-]{11})/,
+  );
+  return m ? m[1] : null;
+}
+function driveId(url: string) {
+  const m = url.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?id=)([\w-]+)/);
+  return m ? m[1] : null;
+}
+function videoEmbed(url: string): { kind: 'video' | 'iframe'; src: string } {
+  const yt = ytId(url);
+  if (yt) return { kind: 'iframe', src: `https://www.youtube.com/embed/${yt}` };
+  const dr = driveId(url);
+  if (dr) return { kind: 'iframe', src: `https://drive.google.com/file/d/${dr}/preview` };
+  if (/\.(mp4|webm|ogg|mov|m4v)(\?|#|$)/i.test(url)) return { kind: 'video', src: url };
+  return { kind: 'iframe', src: url };
+}
+
 export function Postura() {
   const { data, addItem, updateItem, deleteItem, toggleComplete, reorderItems, patchRoot } =
     useAppData();
@@ -51,6 +71,28 @@ export function Postura() {
   const videos = data.posturaVideos ?? [];
   const videoRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [linkOpen, setLinkOpen] = useState(false);
+  const [linkUrl, setLinkUrl] = useState('');
+  const [linkTitulo, setLinkTitulo] = useState('');
+
+  const addLink = () => {
+    const url = linkUrl.trim();
+    if (!url) return;
+    patchRoot({
+      posturaVideos: [
+        {
+          id: crypto.randomUUID(),
+          url,
+          titulo: linkTitulo.trim() || 'Vídeo',
+          createdAt: Date.now(),
+        },
+        ...videos,
+      ],
+    });
+    setLinkUrl('');
+    setLinkTitulo('');
+    setLinkOpen(false);
+  };
 
   const handleVideo = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -144,19 +186,29 @@ export function Postura() {
       {/* ── ABA VÍDEOS ── */}
       {activeTab === 'videos' && (
         <div>
-          <div className="mb-5 flex items-center justify-between gap-3">
+          <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
             <p className="text-sm text-zinc-500">
-              Envie vídeos de referência. Aparecem no feed abaixo.
+              Cole um link (YouTube / Drive) ou envie um arquivo. Aparece no feed abaixo.
             </p>
-            <button
-              type="button"
-              onClick={() => videoRef.current?.click()}
-              disabled={uploading || !SUPABASE_ENABLED}
-              className="flex shrink-0 items-center gap-2 rounded bg-[#0C2E2D] px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-gray-200 transition-all hover:-translate-y-0.5 hover:bg-[#103E3C] disabled:opacity-60"
-            >
-              {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
-              {uploading ? 'Enviando...' : 'Enviar vídeo'}
-            </button>
+            <div className="flex shrink-0 items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setLinkOpen(true)}
+                className="flex items-center gap-2 rounded border border-zinc-200 bg-white px-4 py-2.5 text-sm font-bold text-[#0C2E2D] transition-colors hover:bg-gray-50"
+              >
+                <Link2 className="h-4 w-4" />
+                Colar link
+              </button>
+              <button
+                type="button"
+                onClick={() => videoRef.current?.click()}
+                disabled={uploading || !SUPABASE_ENABLED}
+                className="flex items-center gap-2 rounded bg-[#0C2E2D] px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-gray-200 transition-all hover:-translate-y-0.5 hover:bg-[#103E3C] disabled:opacity-60"
+              >
+                {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+                {uploading ? 'Enviando...' : 'Enviar arquivo'}
+              </button>
+            </div>
             <input
               ref={videoRef}
               type="file"
@@ -175,25 +227,42 @@ export function Postura() {
             </div>
           ) : (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {videos.map((v) => (
-                <div
-                  key={v.id}
-                  className="overflow-hidden rounded border border-gray-100 bg-white shadow-sm transition-shadow hover:shadow-md"
-                >
-                  <video src={v.url} controls className="aspect-[9/16] w-full bg-black object-contain" />
-                  <div className="flex items-center justify-between gap-2 px-3 py-2">
-                    <p className="truncate text-xs font-medium text-gray-700">{v.titulo}</p>
-                    <button
-                      type="button"
-                      onClick={() => removeVideo(v.id)}
-                      aria-label="Remover vídeo"
-                      className="shrink-0 rounded-full p-1.5 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
+              {videos.map((v) => {
+                const emb = videoEmbed(v.url);
+                return (
+                  <div
+                    key={v.id}
+                    className="overflow-hidden rounded border border-gray-100 bg-white shadow-sm transition-shadow hover:shadow-md"
+                  >
+                    {emb.kind === 'video' ? (
+                      <video
+                        src={emb.src}
+                        controls
+                        className="aspect-[9/16] w-full bg-black object-contain"
+                      />
+                    ) : (
+                      <iframe
+                        src={emb.src}
+                        title={v.titulo}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        className="aspect-video w-full bg-black"
+                      />
+                    )}
+                    <div className="flex items-center justify-between gap-2 px-3 py-2">
+                      <p className="truncate text-xs font-medium text-gray-700">{v.titulo}</p>
+                      <button
+                        type="button"
+                        onClick={() => removeVideo(v.id)}
+                        aria-label="Remover vídeo"
+                        className="shrink-0 rounded-full p-1.5 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
@@ -269,6 +338,37 @@ export function Postura() {
           </SortableGrid>
         </div>
       )}
+
+      {/* Modal: adicionar vídeo por link */}
+      <Modal isOpen={linkOpen} onClose={() => setLinkOpen(false)} title="Vídeo por Link">
+        <div className="space-y-4">
+          <p className="text-sm text-gray-500">
+            Cole o link do YouTube, Google Drive ou um link direto (.mp4). Aparece no feed.
+          </p>
+          <input
+            autoFocus
+            value={linkUrl}
+            onChange={(e) => setLinkUrl(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && addLink()}
+            placeholder="https://youtube.com/watch?v=..."
+            className="w-full rounded border border-transparent bg-gray-50 p-3 font-medium text-[#0C2E2D] outline-none focus:border-[#0C2E2D] focus:bg-white"
+          />
+          <input
+            value={linkTitulo}
+            onChange={(e) => setLinkTitulo(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && addLink()}
+            placeholder="Título (opcional)"
+            className="w-full rounded border border-transparent bg-gray-50 p-3 font-medium text-[#0C2E2D] outline-none focus:border-[#0C2E2D] focus:bg-white"
+          />
+          <button
+            type="button"
+            onClick={addLink}
+            className="w-full rounded bg-[#0C2E2D] py-3 font-black tracking-widest text-white uppercase"
+          >
+            Adicionar
+          </button>
+        </div>
+      </Modal>
 
       {/* Modal de orientação (compartilhado) */}
       <Modal
